@@ -533,24 +533,16 @@ After this, we want to edit `tomcat-users.xml` so we can login to the two differ
 <user username="tomcat-admin" password="MYSECRETPASSWORD" roles="admin-gui,manager-gui,manager-status"/>
 ```
 
-Verify that the config-file looks correct, and then you can delete the backup-file
-```sh
-rm -rf /usr/local/apache-tomcat-9.0/conf/tomcat-users.xml.bak
-```
 
 Now we're ready to startup Tomcat!
 
 ```sh
-cd /usr/local/apache-tomcat-9.0/bin
-./startup.sh
+/usr/local/apache-tomcat-9.0/bin/startup.sh
 cd /usr/local/apache-tomcat-9.0/webapps/
 curl http://nexus.xwiki.org/nexus/content/groups/public/org/xwiki/platform/xwiki-platform-distribution-war/9.11.8/xwiki-platform-distribution-war-9.11.8.war --output xwiki.war
 ```
 
 After this, we will need to wait for a moment until Tomcat has autoexpanded/deployed (unpacked) the war.  
 The unpacked war will exist in `/usr/local/apache-tomcat-9.0/webapps/xwiki/` when it's done.  
-So before we continue, we should change the ownership of the folder so it follows the other folders from the install of tomcat-9.0  
 
-```sh
-chown -R root:wheel /usr/local/apache-tomcat-9.0/webapps/xwiki
-```
+When it's done unpacking, we can choose to stop Tomcat and then remove the war-file, or just keep the war-file, it shouldn't make a difference if it stays in the folder.
