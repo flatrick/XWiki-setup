@@ -527,9 +527,10 @@ If you want to allow all IPs starting with 192.168.100. for example, it could lo
 allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1|192\.168\.100\.\d+" />
 ```
 
-After this, we want to edit `tomcat-users.xml` so we can login to the two different webGUIs, to do so, edit `MYSECRETPASSWORD`, and if you want to, also change the username, and then run the command
+After this, we want to edit `tomcat-users.xml` so we can login to the two different webGUIs, modify this line as you see fit, but add it before `</tomcat-users>`
+
 ```sh
-sed -i.bak "s|</tomcat-users>|<user username="tomcat-admin" password="MYSECRETPASSWORD" roles="tomcat"/>\\`echo -e '\n\r'`</tomcat-users\>|g" conf/tomcat-users.xml
+<user username="tomcat-admin" password="MYSECRETPASSWORD" roles="admin-gui,manager-gui,manager-status"/>
 ```
 
 Verify that the config-file looks correct, and then you can delete the backup-file
