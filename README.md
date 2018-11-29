@@ -537,6 +537,7 @@ Verify that the config-file looks correct, and then you can delete the backup-fi
 rm -rf /usr/local/apache-tomcat-9.0/conf/tomcat-users.xml.bak
 ```
 
+Now we're ready to startup Tomcat!
 
 ```sh
 cd /usr/local/apache-tomcat-9.0/bin
