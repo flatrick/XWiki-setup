@@ -3,13 +3,17 @@ Guide to setup XWiki using MySQL as database, Tomcat as servlet-container, OpenJ
 
 
 # INTRO
-The first goal of this project is to create a guide for how to setup XWiki on Ubuntu 18.04 using Tomcat, OpenJDK, MySQL and with nginx as a reverse-proxy in a easy to maintain manner.
-The second goal is to add how to do it on FreeBSD/FreeNAS.
-And the third is to try and make a script that can do all of this automatically, as long as there is a "recipe" for the chosen OS.
 
+1. The first goal of this project is to create a guide for how to setup XWiki on Ubuntu 18.04 using Tomcat, OpenJDK, MySQL and with nginx as a reverse-proxy in a easy to maintain manner.
+1. The second goal is to add how to do it on FreeBSD/FreeNAS.
+1. And the third is to try and make a script that can do all of this automatically, as long as there is a "recipe" for the chosen OS.
 
-[Ubuntu Bionic Beaver 18.04](Ubuntu/BionicBeaver.18.04.md)
-  
-[FreeNAS 11.2 RC2](FreeBSD/FreeNAS_11.2-RC2.md)
+# Guides
 
-[FreeBSD 11.2](FreeBSD/FreeBSD_11.2.md)
+- [Ubuntu Bionic Beaver 18.04](Ubuntu/BionicBeaver.18.04.md)
+- [FreeNAS 11.2 RC2](FreeBSD/FreeNAS_11.2-RC2.md)
+- [FreeBSD 11.2](FreeBSD/FreeBSD_11.2.md)
+
+# Script
+
+**Hopefully coming soon**
