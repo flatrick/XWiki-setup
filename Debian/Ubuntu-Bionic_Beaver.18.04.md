@@ -1,10 +1,6 @@
 # Ubuntu 18.04
 
-# Configure date & time 
-
-` sudo dpkg-reconfigure tzdata`
-
-# Install Java Runtime Environment 
+## Install Java Runtime Environment 
 
 As of 2018-11-22, XWiki doesn't support Java 9+ so we need to install a Java 8 Runtime. 
 For licensing-reasons, the instructions below describe how to install the OpenJDK.
@@ -16,16 +12,16 @@ For licensing-reasons, the instructions below describe how to install the OpenJD
 ```
 
 
-# Install XWIKI from repositories 
+## Install XWiki from repositories 
 
 [Installation using Debian (.DEB) packages](https://www.xwiki.org/xwiki/bin/view/Documentation/AdminGuide/Installation/InstallationViaAPT/)  
 The description in the link above doesn't work in 18.04.1 LTS, the packages aren't compatible yet (2018-11-22) for Bionic Beaver. 
 As such, installation must be done manually. 
 **Even if the repository would work, the part about nginx still has to be done manually**
 
-# Manual installation 
+## Manual installation 
 
-## MySQL server
+### MySQL server
 
  
 ```sh
@@ -39,7 +35,7 @@ Edit `mysqld.cnf` so the line with max_allowed_packet looks like this:
 
 `max_allowed_packet      = 512M `
 
-## Nginx 
+### nginx 
 
 ```sh
  sudo apt-get install nginx 
@@ -77,7 +73,7 @@ server {
 }
 ```
 
-## Tomcat9 
+### Tomcat9 
 
 https://linuxize.com/post/how-to-install-tomcat-9-on-ubuntu-18-04/  
 https://www.linuxtechi.com/install-apache-tomcat-9-ubuntu-18-04-16-04-server/  
@@ -86,7 +82,7 @@ https://www.xwiki.org/xwiki/bin/view/Documentation/AdminGuide/Installation/Insta
 https://www.xwiki.org/xwiki/bin/view/Documentation/AdminGuide/Installation/InstallationWAR/InstallationMySQL/  
 
  
-### 1: Install Tomcat9 
+#### 1: Install Tomcat9 
 
 
 Run the following commands: 
@@ -182,7 +178,7 @@ After saving the file above, run the following commands to start the service and
  sudo ufw allow 8080/tcp
 ```
  
-### 2 Configure Tomcat 
+#### 2 Configure Tomcat 
 
 Edit `/opt/tomcat/webapps/manager/META-INF/context.xml`  
 and `/opt/tomcat/webapps/host-manager/META-INF/context.xml`  
@@ -193,7 +189,7 @@ to allow your computer (as the admin) to access Tomcat's manager and host-manage
 The example above will give access to the host-manager and manager-applications of Tomcat from any IP that starts with **192.168.100.**, so modify it to suit your needs.
 
 
-### 3 Install MySQL Connector 
+#### 3 Install MySQL Connector 
 
 We need to aquire a MySQL Connector so Java/Tomcat/XWiki can access the MySQL-database.  
 As of 2018-11-22, __MySQL 8.0 is NOT compatible with any version of XWiki__ so we will be using 5.1.47.  
@@ -210,7 +206,7 @@ When done, type `exit` to return to your regular "non-privileged" user.
  exit
 ```
 
-## XWiki 
+### XWiki 
  
 
 Download the .WAR into the folder `/opt/tomcat/webapps`  
@@ -235,8 +231,12 @@ sudo rm -rf /opt/tomcat/webapps/xwiki.war
 
 At this point, it's time to start configuring XWiki itself as all requirements should be in place.
  
+#### /opt/tomcat/webapps/xwiki/WEB-INF/hibernate.cfg.xml
 
-### /opt/tomcat/webapps/xwiki/WEB-INF/xwiki.properties 
+**FIX ME!**
+ 
+ 
+#### /opt/tomcat/webapps/xwiki/WEB-INF/xwiki.properties 
 
 These are the settings necessary to edit before we can continue with the actual installation of XWiki. 
 Since we have defined `xwiki.data.dir` in `setenv.sh`, this setting can be left commented out,  
@@ -246,7 +246,7 @@ I've left this note of the setting here to show a different way of handling it i
 environment.permanentDirectory=/opt/xwiki/ 
 ```
 
-### /opt/tomcat/webapps/xwiki/WEB-INF/xwiki.cfg 
+#### /opt/tomcat/webapps/xwiki/WEB-INF/xwiki.cfg 
 
 We need to edit these two lines so we aren't using the default keys (out of security-reasons).  
 ```
@@ -271,7 +271,7 @@ xwiki.store.attachment.versioning.hint=file
 xwiki.store.attachment.recyclebin.content.hint=file
 ```
   
-### XWiki installation-process 
+#### XWiki installation-process 
   
 1. Begin by opening [http://SERVER](http://SERVER) (if nginx isn't working, you should be able to reach it by using [http://SERVER:8080/xwiki/](http://SERVER:8080/xwiki/) instead)  
 1. Create your XWiki user

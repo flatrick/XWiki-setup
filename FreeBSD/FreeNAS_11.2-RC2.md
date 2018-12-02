@@ -72,10 +72,7 @@ Just to make sure our password is correct, let's give it a try!
 ```sh
 mysql --user=root --password="YOURPASSWORDHERE" --host=localhost
 ```
-
-## PostgreSQL
-
-**STUB-article** To be done at a later time!
+  
   
 ## Tomcat
 
@@ -159,3 +156,18 @@ After this, we will need to wait for a moment until Tomcat has autoexpanded/depl
 The unpacked war will exist in `/usr/local/apache-tomcat-9.0/webapps/xwiki/` when it's done.  
 
 When it's done unpacking, we can choose to stop Tomcat and then remove the war-file, or just keep the war-file, it shouldn't make a difference if it stays in the folder.
+
+
+
+#### /usr/local/apache-tomcat-9.0/webapps/xwiki/WEB-INF/hibernate.cfg.xml
+
+**FIX ME!**
+
+
+#### /usr/local/apache-tomcat-9.0/webapps/xwiki/WEB-INF/xwiki.properties 
+
+**FIX ME!**
+
+#### /usr/local/apache-tomcat-9.0/webapps/xwiki/WEB-INF/xwiki.cfg 
+
+**FIX ME!**
