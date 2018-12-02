@@ -1,5 +1,6 @@
-# XWiki-MySQL
-Guide to setup XWiki using MySQL as database, Tomcat as servlet-container, OpenJDK-8 and nginx as a reverse proxy
+# XWiki-setup
+
+Guides to setup XWiki, first the guides will focus on using MySQL as database, Tomcat as servlet-container, OpenJDK-8 for Java-runtime and nginx as a reverse proxy that also handles setting sane cache-values for the visitors
 
 
 # INTRO
