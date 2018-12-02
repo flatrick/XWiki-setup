@@ -10,7 +10,7 @@ Guide to setup XWiki using MySQL as database, Tomcat as servlet-container, OpenJ
 
 # Guides
 
-- [Ubuntu Bionic Beaver 18.04](Ubuntu/BionicBeaver.18.04.md)
+- [Ubuntu Bionic Beaver 18.04](Debian/Ubuntu-Bionic_Beaver.18.04.md)
 - [FreeNAS 11.2 RC2](FreeBSD/FreeNAS_11.2-RC2.md)
 - [FreeBSD 11.2](FreeBSD/FreeBSD_11.2.md)
 
