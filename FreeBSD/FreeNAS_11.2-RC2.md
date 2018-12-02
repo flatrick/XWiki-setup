@@ -1,8 +1,8 @@
-# FreeBSD 11.2 / FreeNAS 11.2
+# FreeNAS 11.2 RC2
 ## FreeNAS and Java
   
 For Java to work in our Jail, we'll need to add a couple of Pre-Init scripts in FreeNAS since we can't run the two commands the installation of openjdk8 will ask us to do, nor will it work editing the jails fstab.
-In FreeBSD, you should just follow the instructions below (shown after the installation of openjdk8)
+
 ```
 ======================================================================
 

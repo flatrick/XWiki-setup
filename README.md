@@ -10,4 +10,6 @@ And the third is to try and make a script that can do all of this automatically,
 
 [Ubuntu Bionic Beaver 18.04](Ubuntu/BionicBeaver.18.04.md)
   
-[FreeNAS](FreeBSD/FreeNAS.md)
+[FreeNAS 11.2 RC2](FreeBSD/FreeNAS_11.2-RC2.md)
+
+[FreeBSD 11.2](FreeBSD/FreeBSD_11.2.md)
