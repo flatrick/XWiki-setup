@@ -1,6 +1,17 @@
 # FreeNAS 11.2 RC2
 ## FreeNAS and Java
   
+**README**
+It should be possible to do this by running a couple of iocage commands
+
+```sh
+iocage set mount_fdescfs=1 JAILNAME
+iocage set mount_procfs=1 JAILNAME
+```
+[iocage](https://www.freebsd.org/cgi/man.cgi?query=iocage)  
+[jail](https://www.freebsd.org/cgi/man.cgi?query=jail)  
+**END README**
+
 For Java to work in our Jail, we'll need to add a couple of Pre-Init scripts in FreeNAS since we can't run the two commands the installation of openjdk8 will ask us to do, nor will it work editing the jails fstab.
 
 ```
