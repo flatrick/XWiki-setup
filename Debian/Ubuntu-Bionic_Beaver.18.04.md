@@ -64,7 +64,8 @@ server {
        # Read more about proxy_pass: http://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_pass 
 
        proxy_pass http://localhost:8080/xwiki; 
-       proxy_set_header        X-Real-IP $remote_addr; 
+       proxy_cache             off;
+       proxy_set_header        X-Real-IP $remote_addr;
        proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for; 
        proxy_set_header        Host $http_host; 
        proxy_set_header        X-Forwarded-Proto $scheme; 
