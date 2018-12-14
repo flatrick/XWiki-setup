@@ -48,20 +48,21 @@ Now we need to configure nginx to work as a reverse-proxy so any users trying to
 ```
 # Expires map
     map $sent_http_content_type $expires
-        {
-                default                 off;
-                text/html               epoch;
-                text/css                1h;
-                application/javascript  1h;
-                ~image                  1m;
-        }
+{
+        default                 off;
+        text/html               epoch;
+        text/css                1h;
+        text/javascript         1h;
+        application/javascript  1h;
+        ~image/                 1m;
+}
 
 server {
     listen       80;
     server_name  wiki.server.local wiki; 
     charset utf-8;
 
-    # Normally root should not be accessed, however, root should not serve files that might compromise the security of your server.
+     # Normally root should not be accessed, however, root should not serve files that might compromise the security of your server.
     root /var/www/html;
 
     location /
@@ -80,6 +81,8 @@ server {
        proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
        proxy_set_header        Host $http_host;
        proxy_set_header        X-Forwarded-Proto $scheme;
+       proxy_ignore_headers     Cache-Control;
+       proxy_set_header        Cache-Control: No-Cache;
        expires                 $expires;
     }
 }
