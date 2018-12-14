@@ -46,23 +46,31 @@ Edit `mysqld.cnf` so the line with max_allowed_packet looks like this:
 Now we need to configure nginx to work as a reverse-proxy so any users trying to access the server on port 80 (default HTTP) will behind the curtains reach our Tomcat/XWiki on port 8080 
 
 ```
-# Expires map
-    map $sent_http_content_type $expires
-{
-        default                 off;
-        text/html               epoch;
-        text/css                1h;
-        text/javascript         1h;
-        application/javascript  1h;
-        ~image/                 1m;
+## Expires map based upon HTTP Response Header Content-Type
+#    map $sent_http_content_type $expires
+#{
+#       default                 off;
+#       text/html               epoch;
+#       text/css                1h;
+#       text/javascript         1h;
+#       application/javascript  1h;
+#       ~image/                 1m;
+#}
+
+## Expires map based upon request_uri (everything after hostname)
+map $request_uri $expires {
+    default off;
+    ~*\.(ogg|ogv|svg|svgz|eot|otf|woff|mp4|ttf|rss|atom|js|jpg|jpeg|gif|png|ico|zip|tgz|gz|rar|bz2|doc|xls|exe|ppt|tar|mid|midi|wav|bmp|rtf)(\?|$) 1h;
+    ~*\.(css) 0m;
 }
+expires $expires;
 
 server {
     listen       80;
     server_name  wiki.server.local wiki; 
     charset utf-8;
 
-     # Normally root should not be accessed, however, root should not serve files that might compromise the security of your server.
+    # Normally root should not be accessed, however, root should not serve files that might compromise the security of your server.
     root /var/www/html;
 
     location /
@@ -81,8 +89,6 @@ server {
        proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
        proxy_set_header        Host $http_host;
        proxy_set_header        X-Forwarded-Proto $scheme;
-       proxy_ignore_headers     Cache-Control;
-       proxy_set_header        Cache-Control: No-Cache;
        expires                 $expires;
     }
 }
