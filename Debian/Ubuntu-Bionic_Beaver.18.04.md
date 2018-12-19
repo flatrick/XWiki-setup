@@ -67,7 +67,7 @@ expires $expires;
 
 server {
     listen       80;
-    server_name  wiki.server.local wiki; 
+    server_name  wiki.DOMAIN.TLD wiki; 
     charset utf-8;
 
     # Normally root should not be accessed, however, root should not serve files that might compromise the security of your server.
@@ -291,6 +291,11 @@ xwiki.store.attachment.versioning.hint=file
 #-# This property is only taken into account when deleting an attachment and has no effect on already deleted documents. 
 xwiki.store.attachment.recyclebin.content.hint=file
 ```
+We also want to set the "correct" url so the cookies will be correct, since XWiki won't know it's behind a reverseproxy by default. This is done by adding this line to xwiki.cfg
+```
+xwiki.home=http://wiki.DOMAIN.TLD/
+```
+
   
 #### XWiki installation-process 
   
