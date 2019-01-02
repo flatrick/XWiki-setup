@@ -83,7 +83,7 @@ server {
     {
        # If path starts with /xwiki - then redirect to backend: XWiki application in Tomcat
        # Read more about proxy_pass: http://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_pass
-       proxy_pass              http://localhost:8080/xwiki;
+       proxy_pass              http://localhost:8080;
        proxy_cache             off;
        proxy_set_header        X-Real-IP $remote_addr;
        proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
