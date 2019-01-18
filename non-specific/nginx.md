@@ -1,5 +1,10 @@
 # /etc/nginx/conf.d/tomcat.conf #
 
+## Unsolved issues
+
+The current nginX-configuration doesn't handle all characters perfectly ( **/** for example), this could be a limit in how nginX handles redirects/acting as reverse proxy, but I will have to look into that later.
+At the very least, I need to verify what characters are causing issues, I've for example seen similiar issues when using **IIS/URL Rewrite** as a reverse proxy
+
 ```
 ## Expires map based upon HTTP Response Header Content-Type
 #    map $sent_http_content_type $expires
@@ -22,7 +27,7 @@ expires $expires;
 
 server {
     listen       80;
-    server_name  wiki.server.local wiki;
+    server_name  wiki.DOMAIN.TLD wiki; 
     charset utf-8;
 
     # Normally root should not be accessed, however, root should not serve files that might compromise the security of your server.
@@ -38,7 +43,7 @@ server {
     {
        # If path starts with /xwiki - then redirect to backend: XWiki application in Tomcat
        # Read more about proxy_pass: http://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_pass
-       proxy_pass              http://localhost:8080/xwiki;
+       proxy_pass              http://localhost:8080;
        proxy_cache             off;
        proxy_set_header        X-Real-IP $remote_addr;
        proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -47,3 +52,4 @@ server {
        expires                 $expires;
     }
 }
+```
