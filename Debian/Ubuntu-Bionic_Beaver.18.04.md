@@ -1,5 +1,10 @@
 # Ubuntu 18.04
 
+## Unsolved issues
+
+The current nginX-configuration doesn't handle all characters perfectly ( **/** for example), this could be a limit in how nginX handles redirects/acting as reverse proxy, but I will have to look into that later.
+At the very least, I need to verify what characters are causing issues, I've for example seen similiar issues when using **IIS/URL Rewrite** as a reverse proxy
+
 ## Install Java Runtime Environment 
 
 As of 2018-11-22, XWiki doesn't support Java 9+ so we need to install a Java 8 Runtime. 
