@@ -114,15 +114,16 @@ https://www.xwiki.org/xwiki/bin/view/Documentation/AdminGuide/Installation/Insta
 Run the following commands: 
 
 ```sh
- sudo groupadd tomcat
- sudo useradd -s /bin/false -g tomcat -d /opt/tomcat tomcat 
- sudo mkdir /opt/tomcat 
- sudo mkdir /opt/xwiki 
- sudo tar xzvf apache-tomcat-9.0.13.tar.gz -C /opt/tomcat --strip-components=1 
- sudo chgrp -R tomcat /opt/tomcat/ /opt/xwiki/ 
- sudo chmod -R g+r /opt/tomcat/conf 
- sudo chmod g+x /opt/tomcat/conf 
- sudo chown -R tomcat /opt/tomcat/webapps/ /opt/tomcat/work/ /opt/tomcat/temp/ /opt/tomcat/logs/ /opt/xwiki/
+sudo groupadd tomcat
+sudo useradd -s /bin/false -g tomcat -d /opt/tomcat tomcat 
+sudo mkdir /opt/xwiki 
+wget http://apache.mirrors.spacedump.net/tomcat/tomcat-9/v9.0.16/bin/apache-tomcat-9.0.16.tar.gz
+sudo tar xzvf apache-tomcat-9.0.16.tar.gz -C /opt/tomcat-9.0.16 --strip-components=1
+sudo ln -s /opt/tomcat-9.0.16 /opt/tomcat
+sudo chgrp -R tomcat /opt/tomcat/ /opt/xwiki/ 
+sudo chmod -R g+r /opt/tomcat/conf 
+sudo chmod g+x /opt/tomcat/conf 
+sudo chown -R tomcat /opt/tomcat/webapps/ /opt/tomcat/work/ /opt/tomcat/temp/ /opt/tomcat/logs/ /opt/xwiki/
 ```
  
 
