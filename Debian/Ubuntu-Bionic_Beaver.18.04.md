@@ -251,7 +251,8 @@ If you've followed my instructions so far, it should end up being:
 /opt/tomcat/webapps/xwiki/
 ```
  
-When this is done and you can visit any of the Tomcat pages ( http://SERVER:8080/manager/ http://SERVER:8080/host-manager/ ) it should have finished deploying/unpacking our .war-file, and thus it's time to remove the .war-file 
+When this is done and you can visit any of the Tomcat pages ( http://SERVER:8080/manager/ http://SERVER:8080/host-manager/ ) it should have finished deploying/unpacking our .war-file, and thus it's time to remove the .war-file
+First we'll need to stop Tomcat so it doesn't remove the deployed application when the .war-file is removed, then we can run this:
 ```sh
 sudo rm -rf /opt/tomcat/webapps/xwiki.war
 ```
