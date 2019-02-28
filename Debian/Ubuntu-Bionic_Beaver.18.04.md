@@ -74,6 +74,7 @@ server {
     listen       80;
     server_name  wiki.DOMAIN.TLD wiki; 
     charset utf-8;
+    client_max_body_size 64M;
 
     # Normally root should not be accessed, however, root should not serve files that might compromise the security of your server.
     root /var/www/html;
