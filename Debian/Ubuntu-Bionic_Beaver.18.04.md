@@ -109,7 +109,7 @@ https://www.xwiki.org/xwiki/bin/view/Documentation/AdminGuide/Installation/Insta
 https://www.xwiki.org/xwiki/bin/view/Documentation/AdminGuide/Installation/InstallationWAR/InstallationMySQL/  
 
  
-#### 1: Install Tomcat9 
+#### Install Tomcat9 
 
 
 Run the following commands: 
@@ -204,7 +204,7 @@ After saving the file above, run the following commands to start the service and
  sudo ufw allow 8080/tcp
 ```
  
-#### 2 Configure Tomcat 
+#### Configure Tomcat 
 
 Edit `/opt/tomcat/webapps/manager/META-INF/context.xml`  
 and `/opt/tomcat/webapps/host-manager/META-INF/context.xml`  
@@ -215,7 +215,7 @@ to allow your computer (as the admin) to access Tomcat's manager and host-manage
 The example above will give access to the host-manager and manager-applications of Tomcat from any IP that starts with **192.168.100.**, so modify it to suit your needs.
 
 
-#### 3 Install MySQL Connector 
+#### Install MySQL Connector 
 
 We need to aquire a MySQL Connector so Java/Tomcat/XWiki can access the MySQL-database.  
 As of 2018-11-22, __MySQL 8.0 is NOT compatible with any version of XWiki__ so we will be using 5.1.47.  
@@ -231,6 +231,18 @@ When done, type `exit` to return to your regular "non-privileged" user.
  mv mysql-connector-java-5.1.47/*.jar /opt/tomcat/lib/
  exit
 ```
+
+#### Fix Java-settings
+
+By default, installing **openjdk-8-jre-headless** will add a setting that can cause issues with extensions using org.jfree.chart.JFreeChart
+To rectify this, edit ##/etc/java-8-openjdk/accessibility.properties## and comment out the line about assistive_technologies by putting the hash-sign at the beginning of the line like below
+
+```
+#assistive_technologies=org.GNOME.Accessibility.AtkWrapper
+```
+
+
+
 
 ### XWiki 
  
