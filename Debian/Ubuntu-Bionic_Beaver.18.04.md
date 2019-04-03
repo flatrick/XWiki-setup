@@ -234,8 +234,8 @@ When done, type `exit` to return to your regular "non-privileged" user.
 
 #### Fix Java-settings
 
-By default, installing **openjdk-8-jre-headless** will add a setting that can cause issues with extensions using org.jfree.chart.JFreeChart
-To rectify this, edit ##/etc/java-8-openjdk/accessibility.properties## and comment out the line about assistive_technologies by putting the hash-sign at the beginning of the line like below
+By default, installing **openjdk-8-jre-headless** will add a setting that can cause issues with extensions using org.jfree.chart.JFreeChart  
+To rectify this, edit **/etc/java-8-openjdk/accessibility.properties** and comment out the line about assistive_technologies by putting the hash-sign at the beginning of the line like below  
 
 ```
 #assistive_technologies=org.GNOME.Accessibility.AtkWrapper
