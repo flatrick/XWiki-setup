@@ -4,7 +4,7 @@ These instructions are written based on the following guides:
 [How to Install Latest MySQL 5.7.21 on RHEL/CentOS 7](https://dinfratechsource.com/2018/11/10/how-to-install-latest-mysql-5-7-21-on-rhel-centos-7/)  
 [How To Install Nginx on CentOS 7](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-centos-7)  
 
-## Install required software
+# Install required software
 ```sh
 yum install epel-release
 yum localinstall https://dev.mysql.com/get/mysql57-community-release-el7-9.noarch.rpm
@@ -12,6 +12,8 @@ yum update
 yum install java-1.8.0-openjdk-devel
 yum install mysql-community-server
 ```
+
+# MySQL
 
 ## Get temporary MySQL Root password
 ```sh
@@ -31,8 +33,9 @@ mysql -u root -p -e "create database xwiki default character set utf8 collate ut
 mysql -u root -p -e "grant all privileges on *.* to xwiki@localhost identified by 'SOMETHING74f3H3r3?'"
 ```
 
-## Download and install Tomcat 9
-TODO
+# Tomcat 9
+**TODO**
+
 ```sh
 groupadd tomcat
 useradd -s /bin/false -g tomcat -d /opt/tomcat tomcat
@@ -45,8 +48,9 @@ chown -RH tomcat: /opt/tomcat/latest/ /opt/xwiki
 chmod +x /opt/tomcat/latest/bin/*.sh
 ```
 
-### Configure Tomcat 9
+## Configure
 
+### Tomcat environment
 Now we need to edit the file where we'll set our environment-settings:  
 `vi /opt/tomcat/latest/conf/setenv.sh`
 
@@ -68,5 +72,53 @@ export CATALINA_OPTS="$CATALINA_OPTS -Dorg.apache.catalina.connector.CoyoteAdapt
 # Set permanent directory 
 export CATALINA_OPTS="$CATALINA_OPTS -Dxwiki.data.dir=/opt/xwiki/"
 ```
-## Download and install XWiki
+
+### Tomcat SystemD service
+
+The command `alternatives --config java` will give us the path to our Java-installation.
+Remove the ending `/jre/bin/java/` and use that as the variable `JAVA_HOME`
+
+In CentOS 7, this is the path I got for java-1.8.0-openjdk-devel: `/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.222.b10-1.el7_7.x86_64`
+
+`vi /etc/systemd/system/tomcat.service`
+
+```sh
+[Unit]
+Description="Apache Tomcat Web Application Container"
+After=network.target
+
+[Service]
+Type=forking
+User=tomcat
+Group=tomcat
+
+Environment="JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.222.b10-1.el7_7.x86_64"
+Environment="CATALINA_PID=/opt/tomcat/latest/temp/tomcat.pid"
+Environment="CATALINA_HOME=/opt/tomcat/latest"
+Environment="CATALINA_BASE=/opt/tomcat/latest"
+Environment="CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC"
+Environment="JAVA_OPTS=-Djava.awt.headless=true -Djava.security.egd=file:///dev/urandom"
+ExecStart="/opt/tomcat/latest/bin/startup.sh"
+ExecStop="/opt/tomcat/latest/bin/shutdown.sh"
+
+UMask=0007
+RestartSec=10
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+After saving `/etc/systemd/system/tomcat.service`, run the following commands to start the service and to allow access to the service.  
+
+```sh
+systemctl daemon-reload
+systemctl start tomcat
+systemctl enable tomcat
+systemctl status tomcat
+firewall-cmd --permanent --add-port=8080/tcp
+firewall-cmd --reload
+```
+
+# Download and install XWiki
 TODO
