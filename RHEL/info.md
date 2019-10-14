@@ -162,7 +162,7 @@ wget http://nexus.xwiki.org/nexus/content/groups/public/org/xwiki/platform/xwiki
 ## Rename and move 
 
 ```sh
-mv xwiki-platform-distribution-war-10.11.9.war /opt/tomcat/webapps/xwiki.war
+mv xwiki-platform-distribution-war-10.11.9.war /opt/tomcat/latest/webapps/xwiki.war
 ```
 
 ## Unpack/expand the war-file
