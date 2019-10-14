@@ -147,7 +147,8 @@ cd /opt/tomcat/latest/lib/
 wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.48.tar.gz
 tar xzf mysql-connector-java-5.1.48.tar.gz 
 mv mysql-connector-java-5.1.48/*.jar ./
-rm -rf mysql-connector-java-5.1.48/
+rm -rf mysql-connector-java-5.1.48/ mysql-connector-java-5.1.48.tar.gz
+chown tomcat:tomcat mysql*
 ```
 
 # XWiki
