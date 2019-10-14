@@ -6,9 +6,10 @@ These instructions are written based on the following guides:
 
 ## Install required software
 ```sh
-yum install java-1.8.0-openjdk
+yum install epel-release
 yum localinstall https://dev.mysql.com/get/mysql57-community-release-el7-9.noarch.rpm
 yum update
+yum install java-1.8.0-openjdk
 yum install mysql-community-server
 ```
 
