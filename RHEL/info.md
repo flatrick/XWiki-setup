@@ -32,6 +32,15 @@ grep 'A temporary password' /var/log/mysqld.log |tail -1
 mysql -u root -p -e "create database xwiki default character set utf8 collate utf8_bin"
 mysql -u root -p -e "grant all privileges on *.* to xwiki@localhost identified by 'SOMETHING74f3H3r3?'"
 ```
+## Fine-tune for XWiki
+
+We will need to allow larger packets for situations where we upload large documents.
+First, run: `vi /etc/my.cnf`
+and add the following line:
+
+```
+max_allowed_packet = 512M
+```
 
 # Tomcat 9
 **TODO**
@@ -73,7 +82,7 @@ export CATALINA_OPTS="$CATALINA_OPTS -Dorg.apache.catalina.connector.CoyoteAdapt
 export CATALINA_OPTS="$CATALINA_OPTS -Dxwiki.data.dir=/opt/xwiki/"
 ```
 
-### Tomcat SystemD service
+### Set up as a systemd service
 
 The command `alternatives --config java` will give us the path to our Java-installation.
 Remove the ending `/jre/bin/java/` and use that as the variable `JAVA_HOME`
@@ -120,5 +129,17 @@ firewall-cmd --permanent --add-port=8080/tcp
 firewall-cmd --reload
 ```
 
-# Download and install XWiki
+### manager & host-manager
+
+Edit `/opt/tomcat/webapps/manager/META-INF/context.xml`
+and `/opt/tomcat/webapps/host-manager/META-INF/context.xml`
+to allow your computer (as the admin) to access Tomcat's manager and host-manager-application:
+
+`allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1|192\.168\.100\.\d+" />`
+
+The example above will give access to the host-manager and manager-applications of Tomcat from any IP that starts with `192.168.100.X`, so modify it to suit your needs.
+
+# XWiki
 TODO
+
+# NginX
