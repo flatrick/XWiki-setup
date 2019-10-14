@@ -150,6 +150,58 @@ mv mysql-connector-java-5.1.48/*.jar ./
 rm -rf mysql-connector-java-5.1.48/ mysql-connector-java-5.1.48.tar.gz
 chown tomcat:tomcat mysql*
 ```
+# NginX
+
+```
+## Expires map based upon HTTP Response Header Content-Type
+#    map $sent_http_content_type $expires
+#{
+#       default                 off;
+#       text/html               epoch;
+#       text/css                1h;
+#       text/javascript         1h;
+#       application/javascript  1h;
+#       ~image/                 1m;
+#}
+
+## Expires map based upon request_uri (everything after hostname)
+map $request_uri $expires {
+    default off;
+    ~*\.(ogg|ogv|svg|svgz|eot|otf|woff|mp4|ttf|rss|atom|js|jpg|jpeg|gif|png|ico|zip|tgz|gz|rar|bz2|doc|xls|exe|ppt|tar|mid|midi|wav|bmp|rtf)(\?|$) 1h;
+    ~*\.(css) 0m;
+}
+expires $expires;
+
+server {
+    listen       80;
+    server_name  wiki.DOMAIN.TLD wiki; 
+    charset utf-8;
+    client_max_body_size 64M;
+
+    # Normally root should not be accessed, however, root should not serve files that might compromise the security of your server.
+    root /var/www/html;
+
+    location /
+    {
+        # All "root" requests will have /xwiki appended AND redirected to wiki.kibino.local
+        rewrite ^ $scheme://$server_name/xwiki$request_uri? permanent;
+    }
+
+    location ^~ /xwiki
+    {
+       # If path starts with /xwiki - then redirect to backend: XWiki application in Tomcat
+       # Read more about proxy_pass: http://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_pass
+       proxy_pass              http://localhost:8080;
+       proxy_cache             off;
+       proxy_set_header        X-Real-IP $remote_addr;
+       proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+       proxy_set_header        Host $http_host;
+       proxy_set_header        X-Forwarded-Proto $scheme;
+       expires                 $expires;
+    }
+}
+```
+
 
 # XWiki
 
@@ -184,4 +236,111 @@ systemctl stop tomcat
 rm /opt/tomcat/latest/webapps/xwiki.war
 ```
 
-# NginX
+#### /opt/tomcat/webapps/xwiki/WEB-INF/hibernate.cfg.xml
+
+**FIX ME!**
+ 
+ 
+#### /opt/tomcat/webapps/xwiki/WEB-INF/xwiki.properties 
+
+These are the settings necessary to edit before we can continue with the actual installation of XWiki. 
+Since we have defined `xwiki.data.dir` in `setenv.sh`, this setting can be left commented out,  
+I've left this note of the setting here to show a different way of handling it in case you don't want the setting to be globally known throughout the Tomcat-server.
+
+```
+environment.permanentDirectory=/opt/xwiki/ 
+```
+
+#### /opt/tomcat/webapps/xwiki/WEB-INF/xwiki.cfg 
+
+We need to edit these two lines so we aren't using the default keys (out of security-reasons).  
+```
+xwiki.authentication.validationKey=totototototototototototototototo 
+xwiki.authentication.encryptionKey=titititititititititititititititi
+```
+  
+We also want to modify how attachments are stored, in later versions of XWiki (10.2 and later), the default is to store attachments as files directly on the drive. 
+```
+#-# [Since 9.0RC1] The default document content recycle bin storage. Default is hibernate. 
+#-# This property is only taken into account when deleting a document and has no effect on already deleted documents. 
+xwiki.store.recyclebin.content.hint=file 
+
+#-# The attachment storage. [Since 3.4M1] default is hibernate. 
+xwiki.store.attachment.hint=file 
+
+#-# The attachment versioning storage. Use 'void' to disable attachment versioning. [Since 3.4M1] default is hibernate. 
+xwiki.store.attachment.versioning.hint=file 
+
+#-# [Since 9.9RC1] The default attachment content recycle bin storage. Default is hibernate. 
+#-# This property is only taken into account when deleting an attachment and has no effect on already deleted documents. 
+xwiki.store.attachment.recyclebin.content.hint=file
+```
+We also want to set the "correct" url so the cookies will be correct, since XWiki won't know it's behind a reverseproxy by default. This is done by adding this line to xwiki.cfg
+```
+xwiki.home=http://wiki.DOMAIN.TLD/
+```
+
+  
+#### XWiki installation-process 
+  
+1. Begin by opening [http://SERVER](http://SERVER) (if nginx isn't working, you should be able to reach it by using [http://SERVER:8080/xwiki/](http://SERVER:8080/xwiki/) instead)  
+1. Create your XWiki user
+1. Select XWiki Standard Flavor for installation and install it 
+  
+  
+### XWiki database optimization 
+  
+After-install tuneup of MySQL database 
+```sh
+sudo mysql -u root -e "create index xwl_value on xwikilargestrings (xwl_value(50)); create index xwd_parent on xwikidoc (xwd_parent(50)); create index xwd_class_xml on xwikidoc (xwd_class_xml(20)); create index ase_page_date on  activitystream_events (ase_page, ase_date); create index xda_docid1 on xwikiattrecyclebin (xda_docid); create index ase_param1 on activitystream_events (ase_param1(200)); create index ase_param2 on activitystream_events (ase_param2(200)); create index ase_param3 on activitystream_events (ase_param3(200)); create index ase_param4 on activitystream_events (ase_param4(200)); create index ase_param5 on activitystream_events (ase_param5(200));" xwiki
+```
+ 
+# Backup-management 
+  
+[Backup/Restore](https://www.xwiki.org/xwiki/bin/view/Documentation/AdminGuide/Backup)  
+Configure the script below to run on a daily basis through a cron-job 
+  
+```sh
+#!/bin/bash 
+############################### 
+# global variables for script # 
+############################### 
+
+myDate=$(date +"%Y.%m.%d-%H.%M.%S") 
+myBackupFolder="/opt/backups/mysql" 
+myBackupFile="$myBackupFolder/xwiki_db_backup-$myDate.sql" 
+myHost="localhost" 
+myUser="xwiki" 
+myPass="xwiki" 
+myDb="xwiki" 
+myOptions="--add-drop-database --max_allowed_packet=1G --comments --dump-date --log-error=$myBackupFolder/$myDate.log" 
+
+################################### 
+# Make a SQL-dump and compress it # 
+################################### 
+
+if mysqldump --host=$myHost --password=$myPass --user=$myUser --databases $myDb $myOptions > $myBackupFile; then 
+        if tar -zcf $myBackupFile.tar.gz $myBackupFile ; then 
+               rm -rf $myBackupFile 
+        else 
+               echo "The compression of the sql-dump was unsuccessful" >> $myBackupFolder/$myDate.log 
+        fi 
+else 
+        echo "The mysqldump was unsuccessful!" >> $myBackupFolder/$myDate.log 
+fi 
+ 
+##################### 
+# Clean old backups # 
+##################### 
+ 
+find $myBackupFolder -daystart -mtime +28 -type f -name "*.tar.gz" -print0 | xargs -0 -r rm 
+find $myBackupFolder -daystart -mtime +7 -type f -name "*.sql" -print0 | xargs -0 -r rm 
+find $myBackupFolder -daystart -mtime +90 -type f -name "*.log" -print0 | xargs -0 -r rm
+```
+
+
+Add the following line to `/etc/crontab` so our scripts runs daily at 01:00 (AM)
+
+```
+0 1 * * *   root    /opt/backup/backup.sh > /dev/null 2>&1
+```
