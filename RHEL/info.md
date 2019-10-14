@@ -11,6 +11,7 @@ yum localinstall https://dev.mysql.com/get/mysql57-community-release-el7-9.noarc
 yum update
 yum install java-1.8.0-openjdk-devel
 yum install mysql-community-server
+yum install wget
 ```
 
 # MySQL
@@ -49,9 +50,9 @@ max_allowed_packet = 512M
 groupadd tomcat
 useradd -s /bin/false -g tomcat -d /opt/tomcat tomcat
 mkdir /opt/xwiki
-curl http://apache.mirrors.spacedump.net/tomcat/tomcat-9/v9.0.26/bin/apache-tomcat-9.0.26.tar.gz --output /opt/apache-tomcat-9.0.26.tar.gz
+wget http://apache.mirrors.spacedump.net/tomcat/tomcat-9/v9.0.26/bin/apache-tomcat-9.0.26.tar.gz 
 mkdir /opt/tomcat/9.0.26
-tar xzvf /opt/apache-tomcat-9.0.26.tar.gz -C /opt/tomcat/9.0.26 --strip-components=1
+tar xzvf apache-tomcat-9.0.26.tar.gz -C /opt/tomcat/9.0.26 --strip-components=1
 ln -s /opt/tomcat/9.0.26 /opt/tomcat/latest
 chown -RH tomcat: /opt/tomcat/latest/ /opt/xwiki
 chmod +x /opt/tomcat/latest/bin/*.sh
@@ -138,6 +139,16 @@ to allow your computer (as the admin) to access Tomcat's manager and host-manage
 `allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1|192\.168\.100\.\d+" />`
 
 The example above will give access to the host-manager and manager-applications of Tomcat from any IP that starts with `192.168.100.X`, so modify it to suit your needs.
+
+### Add support for MySQL
+
+```sh
+cd /opt/tomcat/latest/lib/
+wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.48.tar.gz
+tar xzf mysql-connector-java-5.1.48.tar.gz 
+mv mysql-connector-java-5.1.48/*.jar ./
+rm -rf mysql-connector-java-5.1.48/
+```
 
 # XWiki
 TODO
