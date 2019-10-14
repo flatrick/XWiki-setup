@@ -152,6 +152,9 @@ chown tomcat:tomcat mysql*
 ```
 # NginX
 
+We'll need to create a configuration file for NginX to act as a reverse proxy for our website:
+`vi /etc/nginx/conf.d/tomcat.conf`
+
 ```
 ## Expires map based upon HTTP Response Header Content-Type
 #    map $sent_http_content_type $expires
@@ -344,3 +347,7 @@ Add the following line to `/etc/crontab` so our scripts runs daily at 01:00 (AM)
 ```
 0 1 * * *   root    /opt/backup/backup.sh > /dev/null 2>&1
 ```
+
+# Firewall
+If you've followed all steps until now, you already should have a firewall configured and up and running.
+You might choose to restrict direct access to the tomcat-session (on port 8080) but that's up to you.
