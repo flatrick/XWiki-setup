@@ -204,7 +204,10 @@ server {
     }
 }
 ```
-
+Since CentOS7 uses SELinux, you will also need to allow nginx to act as a reverse proxy by running this command:
+```sh
+setsebool -P httpd_can_network_connect true
+```
 
 # XWiki
 
