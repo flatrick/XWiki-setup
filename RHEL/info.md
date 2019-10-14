@@ -1,5 +1,8 @@
 # CentOS 7
-These instructions are written [based on this guide](https://tecadmin.net/install-mysql-5-7-centos-rhel/)
+These instructions are written based on the following guides:  
+[How to Install MySQL 5.7 on CentOS/RHEL 7/6, Fedora 27/26/25](https://tecadmin.net/install-mysql-5-7-centos-rhel/)  
+[How to Install Latest MySQL 5.7.21 on RHEL/CentOS 7](https://dinfratechsource.com/2018/11/10/how-to-install-latest-mysql-5-7-21-on-rhel-centos-7/)  
+[How To Install Nginx on CentOS 7](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-centos-7)  
 
 ## Install required software
 ```sh
