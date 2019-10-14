@@ -33,6 +33,16 @@ mysql -u root -p -e "grant all privileges on *.* to xwiki@localhost identified b
 
 ## Download and install Tomcat 9
 TODO
-
+```sh
+groupadd tomcat
+useradd -s /bin/false -g tomcat -d /opt/tomcat tomcat
+mkdir /opt/xwiki
+curl http://apache.mirrors.spacedump.net/tomcat/tomcat-9/v9.0.26/bin/apache-tomcat-9.0.26.tar.gz --output /opt/apache-tomcat-9.0.26.tar.gz
+mkdir /opt/tomcat/9.0.26
+tar xzvf /opt/apache-tomcat-9.0.26.tar.gz -C /opt/tomcat/9.0.26 --strip-components=1
+ln -s /opt/tomcat/9.0.26 /opt/tomcat/latest
+chown -RH tomcat: /opt/tomcat/latest/ /opt/xwiki
+chmod +x /opt/tomcat/latest/bin/*.sh
+```
 ## Download and install XWiki
 TODO
