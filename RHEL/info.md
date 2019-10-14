@@ -152,6 +152,36 @@ chown tomcat:tomcat mysql*
 ```
 
 # XWiki
-TODO
+
+## Download
+
+```sh
+wget http://nexus.xwiki.org/nexus/content/groups/public/org/xwiki/platform/xwiki-platform-distribution-war/10.11.9/xwiki-platform-distribution-war-10.11.9.war --directory-prefix=/opt/tomcat/latest/
+```
+
+## Rename and move 
+
+```sh
+mv xwiki-platform-distribution-war-10.11.9.war /opt/tomcat/webapps/xwiki.war
+```
+
+## Unpack/expand the war-file
+
+```sh
+systemctl restart tomcat
+```
+
+This will cause a high load on the server while it unpacks the war into `/opt/tomcat/latest/webapps/xwiki`
+As soon as you can reach the tomcat-session on [the server through http](http://your-server-name:8080), it's time to stop Tomcat
+
+```sh
+systemctl stop tomcat
+```
+
+**Then, we'll remove the .war-file so Tomcat won't try to unpack/expand it and thereby overwriting our configuration-files**
+
+```sh
+rm /opt/tomcat/latest/webapps/xwiki.war
+```
 
 # NginX
