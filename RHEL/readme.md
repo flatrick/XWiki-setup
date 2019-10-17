@@ -121,7 +121,7 @@ In CentOS 7, this is the path I got for java-1.8.0-openjdk-devel: `/usr/lib/jvm/
 
 `vi /etc/systemd/system/tomcat.service`
 
-```sh
+```ini
 [Unit]
 Description="Apache Tomcat Web Application Container"
 After=network.target
@@ -186,7 +186,7 @@ chown tomcat:tomcat mysql*
 We'll need to create a configuration file for NginX to act as a reverse proxy for our website:
 `vi /etc/nginx/conf.d/tomcat.conf`
 
-```
+```nginx
 ## Expires map based upon HTTP Response Header Content-Type
 #    map $sent_http_content_type $expires
 #{
@@ -286,20 +286,20 @@ These are the settings necessary to edit before we can continue with the actual 
 Since we have defined `xwiki.data.dir` in `setenv.sh`, this setting can be left commented out,  
 I've left this note of the setting here to show a different way of handling it in case you don't want the setting to be globally known throughout the Tomcat-server.
 
-```
+```ini
 environment.permanentDirectory=/opt/xwiki/ 
 ```
 
 #### /opt/tomcat/webapps/xwiki/WEB-INF/xwiki.cfg 
 
 We need to edit these two lines so we aren't using the default keys (out of security-reasons).  
-```
+```ini
 xwiki.authentication.validationKey=totototototototototototototototo 
 xwiki.authentication.encryptionKey=titititititititititititititititi
 ```
   
 We also want to modify how attachments are stored, in later versions of XWiki (10.2 and later), the default is to store attachments as files directly on the drive. 
-```
+```ini
 #-# [Since 9.0RC1] The default document content recycle bin storage. Default is hibernate. 
 #-# This property is only taken into account when deleting a document and has no effect on already deleted documents. 
 xwiki.store.recyclebin.content.hint=file 
@@ -315,7 +315,7 @@ xwiki.store.attachment.versioning.hint=file
 xwiki.store.attachment.recyclebin.content.hint=file
 ```
 We also want to set the "correct" url so the cookies will be correct, since XWiki won't know it's behind a reverseproxy by default. This is done by adding this line to xwiki.cfg
-```
+```ini
 xwiki.home=http://wiki.DOMAIN.TLD/
 ```
 
