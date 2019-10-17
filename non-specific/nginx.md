@@ -5,7 +5,7 @@
 The current nginX-configuration doesn't handle all characters perfectly ( **/** for example), this could be a limit in how nginX handles redirects/acting as reverse proxy, but I will have to look into that later.
 At the very least, I need to verify what characters are causing issues, I've for example seen similiar issues when using **IIS/URL Rewrite** as a reverse proxy
 
-```
+```nginx
 ## Expires map based upon HTTP Response Header Content-Type
 #    map $sent_http_content_type $expires
 #{
