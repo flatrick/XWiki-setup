@@ -50,7 +50,7 @@ Edit `mysqld.cnf` so the line with max_allowed_packet looks like this:
 
 Now we need to configure nginx to work as a reverse-proxy so any users trying to access the server on port 80 (default HTTP) will behind the curtains reach our Tomcat/XWiki on port 8080 
 
-```
+```nginx
 ## Expires map based upon HTTP Response Header Content-Type
 #    map $sent_http_content_type $expires
 #{
@@ -182,7 +182,7 @@ Remember to verify JAVA_HOME path before saving the contents below!
 
 `vi /etc/systemd/system/tomcat.service`
 
-```sh
+```ini
 [Unit] 
 Description=Apache Tomcat Web Application Container 
 After=network.target 
@@ -255,20 +255,26 @@ When done, type `exit` to return to your regular "non-privileged" user.
 By default, installing **openjdk-8-jre-headless** will add a setting that can cause issues with extensions using org.jfree.chart.JFreeChart  
 To rectify this, edit **/etc/java-8-openjdk/accessibility.properties** and comment out the line about assistive_technologies by putting the hash-sign at the beginning of the line like below  
 
-```
+```ini
 #assistive_technologies=org.GNOME.Accessibility.AtkWrapper
 ```
 
 # XWiki 
 
 Download the .WAR into the folder `/opt/tomcat/webapps`  
-` sudo wget http://nexus.xwiki.org/nexus/content/groups/public/org/xwiki/platform/xwiki-platform-distribution-war/9.11.8/xwiki-platform-distribution-war-9.11.8.war --directory-prefix=/opt/tomcat/ `
+```sh
+sudo wget http://nexus.xwiki.org/nexus/content/groups/public/org/xwiki/platform/xwiki-platform-distribution-war/9.11.8/xwiki-platform-distribution-war-9.11.8.war --directory-prefix=/opt/tomcat/ 
+```
 
 Then we will rename it and put it in the webapps folder so it can be automatically expanded (unpacked)  
-` sudo mv xwiki-platform-distribution-war-9.11.8.war /opt/tomcat/webapps/xwiki.war `
+```sh
+sudo mv xwiki-platform-distribution-war-9.11.8.war /opt/tomcat/webapps/xwiki.war 
+```
 
 After this, we'll need to restart the Tomcat-service so it will actually expand our .war-file  
-` sudo systemctl restart tomcat `
+```sh
+sudo systemctl restart tomcat 
+```
 
 This will incur a heavy load on the server for a short while (should be less then 2 minutes) as it unpacks the package into a folder of similiar name as the file.  
 If you've followed my instructions so far, it should end up being:
@@ -295,20 +301,20 @@ These are the settings necessary to edit before we can continue with the actual 
 Since we have defined `xwiki.data.dir` in `setenv.sh`, this setting can be left commented out,  
 I've left this note of the setting here to show a different way of handling it in case you don't want the setting to be globally known throughout the Tomcat-server.
 
-```
+```ini
 environment.permanentDirectory=/opt/xwiki/ 
 ```
 
 ## /opt/tomcat/webapps/xwiki/WEB-INF/xwiki.cfg 
 
 We need to edit these two lines so we aren't using the default keys (out of security-reasons).  
-```
+```ini
 xwiki.authentication.validationKey=totototototototototototototototo 
 xwiki.authentication.encryptionKey=titititititititititititititititi
 ```
   
 We also want to modify how attachments are stored, in later versions of XWiki (10.2 and later), the default is to store attachments as files directly on the drive. 
-```
+```ini
 #-# [Since 9.0RC1] The default document content recycle bin storage. Default is hibernate. 
 #-# This property is only taken into account when deleting a document and has no effect on already deleted documents. 
 xwiki.store.recyclebin.content.hint=file 
