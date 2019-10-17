@@ -372,6 +372,22 @@ Pass="xwiki"
 Db="xwiki"
 Options="--add-drop-database --max_allowed_packet=1G --comments --dump-date --log-error=$Logs/$Date/mysqldump.log"
 
+############################
+# Create necessary folders #
+############################
+
+if [ ! -d $Logs/$Date ] ; then
+        mkdir $Logs/$Date
+fi
+
+if [ ! -d $MySQLBackup ] ; then
+        mkdir $MySQLBackup
+fi
+
+if [ ! -d $FilesBackup ] ; then
+        mkdir $FilesBackup
+fi
+
 ###################################
 # Make a SQL-dump and compress it #
 ###################################
