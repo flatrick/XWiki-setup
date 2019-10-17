@@ -119,6 +119,22 @@ systemctl status tomcat
 firewall-cmd --permanent --add-port=8080/tcp
 firewall-cmd --reload
 ```
+
+## Install MySQL Connector 
+
+We need to aquire a MySQL Connector so Java/Tomcat/XWiki can access the MySQL-database.  
+Either use `su` or `sudo -i` to temporarily switch to a user with superuser-permissions.  
+When done, type `exit` to return to your regular "non-privileged" user.
+  
+```sh
+su
+cd /opt/tomcat/lib/
+wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.47.tar.gz
+tar xzf mysql-connector-java-5.1.47.tar.gz 
+mv mysql-connector-java-5.1.47/*.jar /opt/tomcat/lib/
+exit
+```
+
 # Upgrade Tomcat
 
 ```sh
