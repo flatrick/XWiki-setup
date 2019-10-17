@@ -94,7 +94,7 @@ export CATALINA_OPTS="$CATALINA_OPTS -Dxwiki.data.dir=/opt/xwiki/"
 
 ### Configure Tomcat to use UTF-8 encoding
 
-You'll need to edit `conf/server` and ensure that the connector for port 8080 has this option: `URIEncoding="UTF-8"`  
+You'll need to edit `/opt/tomcat/latest/conf/server.xml` and ensure that the connector for port 8080 has this option: `URIEncoding="UTF-8"`  
 
 Example on how it could look:  
 ```xml
