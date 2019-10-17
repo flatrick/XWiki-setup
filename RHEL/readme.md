@@ -346,15 +346,16 @@ Configure the script below to run on a daily basis through a cron-job
 # global variables for script #
 ###############################
 
-Date=$(date +"%Y.%m.%d-%H.%M.%S")
+Date="$(date +"%Y.%m.%d-%H.%M.%S")"
 BackupFolder="/opt/backup"
 MySQLBackup="$BackupFolder/mysql/xwiki_db_backup-$Date.sql"
 FilesBackup="$BackupFolder/files/xwiki_files_backup-$Date.tar.gz"
+Logs="$BackupFolder/logs"
 Host="localhost"
 User="xwiki"
 Pass="xwiki"
 Db="xwiki"
-Options="--add-drop-database --max_allowed_packet=1G --comments --dump-date --log-error=$BackupFolder/Error_$myDate.log"
+Options="--add-drop-database --max_allowed_packet=1G --comments --dump-date --log-error=$Logs/$Date/mysqldump.log"
 
 ###################################
 # Make a SQL-dump and compress it #
@@ -364,10 +365,10 @@ if mysqldump --host=$Host --password=$Pass --user=$User --databases $Db $Options
         if tar -zcf $MySQLBackup.tar.gz $MySQLBackup ; then
                rm -rf $MySQLBackup
         else
-               echo "The compression of the sql-dump was unsuccessful" >> $BackupFolder/Error_$Date.log
+               echo "The compression of the sql-dump was unsuccessful" >> $Logs/$Date/mysqldump.log
         fi
 else
-        echo "The mysqldump was unsuccessful!" >> $BackupFolder/Error_$Date.log
+        echo "The mysqldump was unsuccessful!" >> $Logs/$Date/mysqldump.log
 fi
 
 
@@ -376,7 +377,7 @@ fi
 ################
 
 if ! tar -czf $FilesBackup /opt/xwiki /opt/tomcat/latest/webapps/ /opt/tomcat/latest/work/; then
-        echo "The backup was unsuccessful!" >> $BackupFolder/Error_$Date.log;
+        echo "The backup was unsuccessful!" >> $Logs/$Date/files.log;
 fi
 
 
