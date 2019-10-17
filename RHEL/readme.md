@@ -82,6 +82,18 @@ export CATALINA_OPTS="$CATALINA_OPTS -Dorg.apache.catalina.connector.CoyoteAdapt
 # Set permanent directory 
 export CATALINA_OPTS="$CATALINA_OPTS -Dxwiki.data.dir=/opt/xwiki/"
 ```
+### Configure Tomcat to use UTF-8 encoding
+
+You'll need to edit `conf/server` and ensure that the connector for port 8080 has this option: `URIEncoding="UTF-8"`  
+
+Example on how it could look:  
+```xml
+<Connector port="8080" maxHttpHeaderSize="8192"
+    maxThreads="150" minSpareThreads="25" maxSpareThreads="75"
+    enableLookups="false" redirectPort="8443" acceptCount="100"
+    connectionTimeout="20000" disableUploadTimeout="true"
+    URIEncoding="UTF-8"/>
+```
 
 ### Set up as a systemd service
 
@@ -139,6 +151,8 @@ to allow your computer (as the admin) to access Tomcat's manager and host-manage
 `allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1|192\.168\.100\.\d+" />`
 
 The example above will give access to the host-manager and manager-applications of Tomcat from any IP that starts with `192.168.100.X`, so modify it to suit your needs.
+
+**TODO:** Describe how to create users for **manager** & **host-manager**
 
 ### Add support for MySQL
 
@@ -204,7 +218,9 @@ server {
     }
 }
 ```
-Since CentOS7 uses SELinux, you will also need to allow nginx to act as a reverse proxy by running this command:
+
+Since CentOS7 uses SELinux, you will also need to allow nginx to act as a reverse proxy by running this command:  
+
 ```sh
 setsebool -P httpd_can_network_connect true
 ```
@@ -307,41 +323,53 @@ sudo mysql -u root -e "create index xwl_value on xwikilargestrings (xwl_value(50
 Configure the script below to run on a daily basis through a cron-job 
   
 ```sh
-#!/bin/bash 
-############################### 
-# global variables for script # 
-############################### 
+#!/bin/bash
 
-myDate=$(date +"%Y.%m.%d-%H.%M.%S") 
-myBackupFolder="/opt/backups/mysql" 
-myBackupFile="$myBackupFolder/xwiki_db_backup-$myDate.sql" 
-myHost="localhost" 
-myUser="xwiki" 
-myPass="xwiki" 
-myDb="xwiki" 
-myOptions="--add-drop-database --max_allowed_packet=1G --comments --dump-date --log-error=$myBackupFolder/$myDate.log" 
+###############################
+# global variables for script #
+###############################
 
-################################### 
-# Make a SQL-dump and compress it # 
-################################### 
+Date=$(date +"%Y.%m.%d-%H.%M.%S")
+BackupFolder="/opt/backup"
+MySQLBackup="$BackupFolder/mysql/xwiki_db_backup-$Date.sql"
+FilesBackup="$BackupFolder/files/xwiki_files_backup-$Date.tar.gz"
+Host="localhost"
+User="xwiki"
+Pass="xwiki"
+Db="xwiki"
+Options="--add-drop-database --max_allowed_packet=1G --comments --dump-date --log-error=$BackupFolder/Error_$myDate.log"
 
-if mysqldump --host=$myHost --password=$myPass --user=$myUser --databases $myDb $myOptions > $myBackupFile; then 
-        if tar -zcf $myBackupFile.tar.gz $myBackupFile ; then 
-               rm -rf $myBackupFile 
-        else 
-               echo "The compression of the sql-dump was unsuccessful" >> $myBackupFolder/$myDate.log 
-        fi 
-else 
-        echo "The mysqldump was unsuccessful!" >> $myBackupFolder/$myDate.log 
-fi 
- 
-##################### 
-# Clean old backups # 
-##################### 
- 
-find $myBackupFolder -daystart -mtime +28 -type f -name "*.tar.gz" -print0 | xargs -0 -r rm 
-find $myBackupFolder -daystart -mtime +7 -type f -name "*.sql" -print0 | xargs -0 -r rm 
-find $myBackupFolder -daystart -mtime +90 -type f -name "*.log" -print0 | xargs -0 -r rm
+###################################
+# Make a SQL-dump and compress it #
+###################################
+
+if mysqldump --host=$Host --password=$Pass --user=$User --databases $Db $Options > $MySQLBackup; then
+        if tar -zcf $MySQLBackup.tar.gz $MySQLBackup ; then
+               rm -rf $MySQLBackup
+        else
+               echo "The compression of the sql-dump was unsuccessful" >> $BackupFolder/Error_$Date.log
+        fi
+else
+        echo "The mysqldump was unsuccessful!" >> $BackupFolder/Error_$Date.log
+fi
+
+
+################
+# Backup files #
+################
+
+if ! tar -czf $FilesBackup /opt/xwiki /opt/tomcat/latest/webapps/ /opt/tomcat/latest/work/; then
+        echo "The backup was unsuccessful!" >> $BackupFolder/Error_$Date.log;
+fi
+
+
+#####################
+# Clean old backups #
+#####################
+
+find $BackupFolder -daystart -mtime +28 -type f -name "*.tar.gz" -print0 | xargs -0 -r rm
+find $BackupFolder -daystart -mtime +7 -type f -name "*.sql" -print0 | xargs -0 -r rm
+find $BackupFolder -daystart -mtime +90 -type f -name "*.log" -print0 | xargs -0 -r rm
 ```
 
 
