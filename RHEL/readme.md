@@ -44,18 +44,27 @@ max_allowed_packet = 512M
 ```
 
 # Tomcat 9
-**TODO**
+
+## Create user for Tomcat
 
 ```sh
 groupadd tomcat
 useradd -s /bin/false -g tomcat -d /opt/tomcat tomcat
+```
+
+## Create the necessary folders
+
+```sh
 mkdir /opt/xwiki
-wget http://apache.mirrors.spacedump.net/tomcat/tomcat-9/v9.0.26/bin/apache-tomcat-9.0.26.tar.gz 
 mkdir /opt/tomcat/9.0.26
+```
+
+## Download & Unpack/Symlink Tomcat 
+
+```sh
+wget http://apache.mirrors.spacedump.net/tomcat/tomcat-9/v9.0.26/bin/apache-tomcat-9.0.26.tar.gz 
 tar xzvf apache-tomcat-9.0.26.tar.gz -C /opt/tomcat/9.0.26 --strip-components=1
 ln -s /opt/tomcat/9.0.26 /opt/tomcat/latest
-chown -RH tomcat: /opt/tomcat/latest/ /opt/xwiki
-chmod +x /opt/tomcat/latest/bin/*.sh
 ```
 
 ## Configure
@@ -82,6 +91,7 @@ export CATALINA_OPTS="$CATALINA_OPTS -Dorg.apache.catalina.connector.CoyoteAdapt
 # Set permanent directory 
 export CATALINA_OPTS="$CATALINA_OPTS -Dxwiki.data.dir=/opt/xwiki/"
 ```
+
 ### Configure Tomcat to use UTF-8 encoding
 
 You'll need to edit `conf/server` and ensure that the connector for port 8080 has this option: `URIEncoding="UTF-8"`  
@@ -95,7 +105,14 @@ Example on how it could look:
     URIEncoding="UTF-8"/>
 ```
 
-### Set up as a systemd service
+### Set correct permissions
+
+```sh
+chown -RH tomcat: /opt/tomcat/latest/ /opt/xwiki
+chmod +x /opt/tomcat/latest/bin/*.sh
+```
+
+## Set up as a systemd service
 
 The command `alternatives --config java` will give us the path to our Java-installation.
 Remove the ending `/jre/bin/java/` and use that as the variable `JAVA_HOME`
