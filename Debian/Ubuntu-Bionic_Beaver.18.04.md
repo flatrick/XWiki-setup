@@ -363,8 +363,10 @@ Configure the script below to run on a daily basis through a cron-job
 
 Date="$(date +"%Y.%m.%d-%H.%M.%S")"
 BackupFolder="/opt/backup"
-MySQLBackup="$BackupFolder/mysql/xwiki_db_backup-$Date.sql"
-FilesBackup="$BackupFolder/files/xwiki_files_backup-$Date.tar.gz"
+MySQL="$BackupFolder/mysql"
+Files="$BackupFolder/files"
+MySQLBackup="$MySQL/xwiki_db_backup-$Date.sql"
+FilesBackup="$Files/wiki_files_backup-$Date.tar.gz"
 Logs="$BackupFolder/logs"
 Host="localhost"
 User="xwiki"
@@ -380,12 +382,12 @@ if [ ! -d $Logs/$Date ] ; then
         mkdir $Logs/$Date
 fi
 
-if [ ! -d $MySQLBackup ] ; then
-        mkdir $MySQLBackup
+if [ ! -d $MySQL ] ; then
+        mkdir $MySQL
 fi
 
-if [ ! -d $FilesBackup ] ; then
-        mkdir $FilesBackup
+if [ ! -d $Files ] ; then
+        mkdir $Files
 fi
 
 ###################################
@@ -402,7 +404,6 @@ else
         echo "The mysqldump was unsuccessful!" >> $Logs/$Date/mysqldump.log
 fi
 
-
 ################
 # Backup files #
 ################
@@ -410,7 +411,6 @@ fi
 if ! tar -czf $FilesBackup /opt/xwiki /opt/tomcat/latest/webapps/ /opt/tomcat/latest/work/; then
         echo "The backup was unsuccessful!" >> $Logs/$Date/files.log;
 fi
-
 
 #####################
 # Clean old backups #
