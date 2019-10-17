@@ -330,7 +330,7 @@ xwiki.store.attachment.versioning.hint=file
 xwiki.store.attachment.recyclebin.content.hint=file
 ```
 We also want to set the "correct" url so the cookies will be correct, since XWiki won't know it's behind a reverseproxy by default. This is done by adding this line to xwiki.cfg
-```
+```ini
 xwiki.home=http://wiki.DOMAIN.TLD/
 ```
 
@@ -407,7 +407,7 @@ find $BackupFolder -daystart -mtime +90 -type f -name "*.log" -print0 | xargs -0
 
 Add the following line to `/etc/crontab` so our scripts runs daily at 01:00 (AM)
 
-```
+```cron
 0 1 * * *   root    /opt/backup/backup.sh > /dev/null 2>&1
 ```
   
