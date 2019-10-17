@@ -119,3 +119,49 @@ systemctl status tomcat
 firewall-cmd --permanent --add-port=8080/tcp
 firewall-cmd --reload
 ```
+# Upgrade Tomcat
+
+```sh
+wget http://apache.mirrors.spacedump.net/tomcat/tomcat-9/v9.0.16/bin/apache-tomcat-9.0.16.tar.gz
+sudo tar xzvf apache-tomcat-9.0.16.tar.gz -C /opt/tomcat-9.0.16 --strip-components=1
+```
+
+These step needs to be reworked since this might only work while a new installation!
+
+```sh
+sudo service tomcat stop
+sudo if [ -L /opt/tomcat ]; then rm /opt/tomcat; fi
+sudo ln -s /opt/tomcat-9.0.16 /opt/tomcat
+sudo chown -RH tomcat: /opt/tomcat
+sudo chmod +x /opt/tomcat/bin/*.sh
+```
+
+First, we need to ensure that all custom settings are configured in the new tomcat-installation
+
+```sh
+colordiff -yW"`tput cols`" /opt/tomcat/conf/server.xml /opt/tomcat-OldVersion/conf/server.xml  | less -R
+```
+
+We need to copy the setenv.sh that sets all of our settings for tomcat-upstart:
+
+```sh
+cp -a /opt/tomcat-CURRENTVERSION/bin/setenv.sh /opt/tomcat/bin/
+
+Move our XWiki-installation and the configs for manager + host-manager
+
+```sh
+cp -a /opt/tomcat-OldVersion/webapps/xwiki /opt/tomcat/webapps/
+cp -a /opt/tomcat-OldVersion/webapps/manager/META-INF/context.xml /opt/tomcat/webapps/manager/META-INF/
+cp -a /opt/tomcat-OldVersion/webapps/host-manager/META-INF/context.xml /opt/tomcat/webapps/host-manager/META-INF/
+```
+
+And last but not least, it's time to copy our MySQL-connector
+
+```sh
+cp -a /opt/tomcat-OldVersion/lib/mysql-connector*.jar /opt/tomcat/lib/
+```
+
+And now we should be ready to start up our new version of Tomcat!
+```sh
+service tomcat start
+```
