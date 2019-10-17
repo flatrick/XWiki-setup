@@ -402,6 +402,7 @@ fi
 
 find $BackupFolder -daystart -mtime +28 -type f -name "*.tar.gz" -print0 | xargs -0 -r rm
 find $BackupFolder -daystart -mtime +7 -type f -name "*.sql" -print0 | xargs -0 -r rm
+find $BackupFolder -daystart -mtime +90 -type f -name "*.log" -print0 | xargs -0 -r rm
 ```
 
 
