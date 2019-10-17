@@ -62,7 +62,7 @@ chmod +x /opt/tomcat/latest/bin/*.sh
 
 ### Tomcat environment
 Now we need to edit the file where we'll set our environment-settings:  
-`vi /opt/tomcat/latest/conf/setenv.sh`
+`vi /opt/tomcat/latest/bin/setenv.sh`
 
 ```sh
 #! /bin/bash 
