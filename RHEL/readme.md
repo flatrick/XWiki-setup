@@ -355,7 +355,7 @@ FilesBackup="$Files/wiki_files_backup-$Date.tar.gz"
 Logs="$BackupFolder/logs"
 Host="localhost"
 User="xwiki"
-Pass="xwiki1sD3l1c10us?"
+Pass="xwiki"
 Db="xwiki"
 Options="--add-drop-database --max_allowed_packet=1G --comments --dump-date --log-error=$Logs/$Date/mysqldump.log"
 
