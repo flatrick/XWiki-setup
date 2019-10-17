@@ -82,7 +82,7 @@ This is the path I got for java-1.8.0-openjdk-devel: `/usr/lib/jvm/java-1.8.0-op
 Now it's time to create and edit our service-file for Tomcat:  
 `vi /etc/systemd/system/tomcat.service`  
 
-```sh
+```ini
 [Unit]
 Description="Apache Tomcat Web Application Container"
 After=network.target
