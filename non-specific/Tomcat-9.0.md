@@ -162,6 +162,7 @@ We need to copy the setenv.sh that sets all of our settings for tomcat-upstart:
 
 ```sh
 cp -a /opt/tomcat-CURRENTVERSION/bin/setenv.sh /opt/tomcat/bin/
+```
 
 Move our XWiki-installation and the configs for manager + host-manager
 
