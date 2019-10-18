@@ -235,11 +235,20 @@ server {
     }
 }
 ```
+## SELinux
 
 Since CentOS7 uses SELinux, you will also need to allow nginx to act as a reverse proxy by running this command:  
 
 ```sh
 setsebool -P httpd_can_network_connect true
+```
+
+## Allow HTTP/HTTPS access
+
+```sh
+firewall-cmd --permanent --zone=public --add-service=http 
+firewall-cmd --permanent --zone=public --add-service=https
+firewall-cmd --reload
 ```
 
 # XWiki
@@ -329,7 +338,8 @@ xwiki.home=http://wiki.DOMAIN.TLD/
   
 ### XWiki database optimization 
   
-After-install tuneup of MySQL database 
+After-install tuneup of MySQL database:
+
 ```sh
 sudo mysql -u root -e "create index xwl_value on xwikilargestrings (xwl_value(50)); create index xwd_parent on xwikidoc (xwd_parent(50)); create index xwd_class_xml on xwikidoc (xwd_class_xml(20)); create index ase_page_date on  activitystream_events (ase_page, ase_date); create index xda_docid1 on xwikiattrecyclebin (xda_docid); create index ase_param1 on activitystream_events (ase_param1(200)); create index ase_param2 on activitystream_events (ase_param2(200)); create index ase_param3 on activitystream_events (ase_param3(200)); create index ase_param4 on activitystream_events (ase_param4(200)); create index ase_param5 on activitystream_events (ase_param5(200));" xwiki
 ```
