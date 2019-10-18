@@ -292,7 +292,7 @@ At this point, it's time to start configuring XWiki itself as all requirements s
  
 ## /opt/tomcat/webapps/xwiki/WEB-INF/hibernate.cfg.xml
 
-**FIX ME!**
+**TODO:** Describe necessary configuration here to connect XWiki to a database
  
  
 ## /opt/tomcat/webapps/xwiki/WEB-INF/xwiki.properties 
