@@ -12,6 +12,7 @@ yum update
 yum install java-1.8.0-openjdk-devel
 yum install mysql-community-server
 yum install wget
+yum install nginx
 ```
 
 # MySQL
