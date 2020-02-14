@@ -132,7 +132,7 @@ Type=forking
 User=tomcat
 Group=tomcat
 
-Environment="JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.222.b10-1.el7_7.x86_64"
+Environment="JAVA_HOME=$(dirname $(dirname $(readlink $(readlink $(which javac)))))"
 Environment="CATALINA_PID=/opt/tomcat/latest/temp/tomcat.pid"
 Environment="CATALINA_HOME=/opt/tomcat/latest"
 Environment="CATALINA_BASE=/opt/tomcat/latest"
