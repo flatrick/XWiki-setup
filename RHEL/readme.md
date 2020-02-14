@@ -115,10 +115,7 @@ chmod +x /opt/tomcat/latest/bin/*.sh
 
 ## Set up as a systemd service
 
-The command `alternatives --config java` will give us the path to our Java-installation.
-Remove the ending `/jre/bin/java/` and use that as the variable `JAVA_HOME`
-
-In CentOS 7, this is the path I got for java-1.8.0-openjdk-devel: `/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.222.b10-1.el7_7.x86_64`
+The command `alternatives --config java` will allow you to configure which Java Runtime to use.
 
 `vi /etc/systemd/system/tomcat.service`
 
