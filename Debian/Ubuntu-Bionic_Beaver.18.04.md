@@ -13,7 +13,7 @@ For licensing-reasons, the instructions below describe how to install the OpenJD
 ```sh
  sudo add-apt-repository universe 
  sudo apt-get update 
- sudo apt-get install openjdk-8-jre-headless
+ sudo apt-get install openjdk-8-jdk-headless
 ```
 
 
