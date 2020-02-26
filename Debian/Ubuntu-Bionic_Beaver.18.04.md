@@ -171,14 +171,8 @@ chmod +x /opt/tomcat/latest/bin/*.sh
 
 ## Set up as a systemd service
  
-The command `update-java-alternatives -l` will give us the path to our JAVA-installation, use this and ensure that `JAVA_HOME` points to that path. 
-
-```sh
- update-java-alternatives -l 
- sudo nano /etc/systemd/system/tomcat.service
-```
-
-Remember to verify JAVA_HOME path before saving the contents below! 
+The command `update-java-alternatives -l` will show us the installed versions of **Java**, use this to ensure that version **1.8.0** is installed.  
+_If you installed a different version of Java, you will need to change **java-1.8.0-openjdk-amd64** to the correct one for your installation._
 
 `vi /etc/systemd/system/tomcat.service`
 
