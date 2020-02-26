@@ -115,7 +115,7 @@ chmod +x /opt/tomcat/latest/bin/*.sh
 
 ## Set up as a systemd service
 
-The command `alternatives --config java` will allow you to configure which Java Runtime to use.
+The command `alternatives --list |grep java` will show you which versions of Java are installed on the server, ensure you see 1.8.0 here before continuing.
 
 `vi /etc/systemd/system/tomcat.service`
 
