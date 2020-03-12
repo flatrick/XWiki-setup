@@ -1,4 +1,12 @@
-# docker-compose.yaml
+# Info
+
+This example will:
+- setup XWiki running on [http://localhost:8080](http://localhost:8080)
+  - with MySQL as a db backend
+- Matomo on [http://localhost:8081](http://localhost:8081)
+  - with MariaDB as a db backend
+
+## docker-compose.yaml
 
 ```yaml
 version: "3.1"
@@ -58,7 +66,7 @@ volumes:
   xwiki-data:
 ```
 
-# mariadb.env
+### mariadb.env
 
 ```ini
 MYSQL_ROOT_PASSWORD=
@@ -67,7 +75,7 @@ MYSQL_USER=
 MYSQL_PASSWORD=
 ```
 
-# matomo.env
+### matomo.env
 
 ```ini
 MATOMO_DATABASE_ADAPTER=mysql
@@ -79,7 +87,7 @@ MATOMO_DATABASE_PASSWORD=
 VIRTUAL_HOST=
 ```
 
-# mysql.env
+### mysql.env
 
 ```ini
 MYSQL_ROOT_PASSWORD=
@@ -88,7 +96,7 @@ MYSQL_USER=
 MYSQL_PASSWORD=
 ```
 
-# xwiki.env
+### xwiki.env
 
 ```ini
 DB_HOST=xwiki-mysql-db
