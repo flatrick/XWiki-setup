@@ -1,11 +1,16 @@
 # Info
 
-This example will:
+This example sets up and runs XWiki and Matomo using Docker Compose.
+It uses volumes for permanent storage, so that if you restart the containers, they'll still contain the same data.
+It also uses links to files on the host for MySQL so as to ensure the correct settings that XWiki requires.
+If you're running this on Windows, make sure to add the unit-drive (C:\, D:\ or wherever you put these files) as a resource in the Docker service (Resources - File Sharing).
 
-- setup XWiki running on [http://localhost:8080](http://localhost:8080)
+- XWiki running on [http://localhost:8080](http://localhost:8080)
   - with MySQL as a db backend
-- Matomo on [http://localhost:8081](http://localhost:8081)
+- Matomo running on [http://localhost:8081](http://localhost:8081)
   - with MariaDB as a db backend
+
+## Readme before starting
 
 Edit all .env-files listed below to have usernames and passwords.
 Matomo uses MariaDB so their usernames and passwords must match.
