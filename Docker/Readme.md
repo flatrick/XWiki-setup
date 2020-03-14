@@ -53,8 +53,10 @@ services:
     restart: always
     command: --max-allowed-packet=64MB
     volumes:
-      - ./xwiki.cnf:/etc/mysql/conf.d/xwiki.cnf
+      # Download init.sql from: https://raw.githubusercontent.com/xwiki-contrib/docker-xwiki/master/11/mysql-tomcat/mysql/init.sql
+      # Download xwiki.cnf from: https://raw.githubusercontent.com/xwiki-contrib/docker-xwiki/master/11/mysql-tomcat/mysql/xwiki.cnf
       - mysql-data:/var/lib/mysql
+      - ./xwiki.cnf:/etc/mysql/conf.d/xwiki.cnf
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     env_file:
       - ./mysql.env
