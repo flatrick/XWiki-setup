@@ -20,8 +20,15 @@ TomcatDest=/opt/tomcat
 
 ## Download && Unpack
 cd ${InstallFiles}
-wget ${TomcatURL}
-if ! [ -d ${TomcatDest}/${NewTomcat} ]; then mkdir ${TomcatDest}/${NewTomcat}; fi
+if wget ${TomcatURL}; then
+        if ! [ -d ${TomcatDest}/${NewTomcat} ]; then
+                mkdir ${TomcatDest}/${NewTomcat}
+        fi
+else
+        echo "Download failed, try again!"
+        exit
+fi
+
 tar xzvf ${InstallFiles}/apache-tomcat-${NewTomcat}.tar.gz -C ${TomcatDest}/${NewTomcat} --strip-components=1
 
 

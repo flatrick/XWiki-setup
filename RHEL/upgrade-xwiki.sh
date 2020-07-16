@@ -6,7 +6,7 @@ if [ -z ${1} ]; then
         echo "ex: $0 http://url.to.resource/file.name.here.tar.gz"
         exit #exit script
 elif grep -iqP "(^http[s]?):\/\/.*.war$" <<< ${1}; then
-  XWikiURL=$1
+        XWikiURL=$1
 else
         echo "No valid url was supplied as an argument for the script"
         echo "ex: $0 http://nexus.xwiki.org/nexus/content/groups/public/org/xwiki/platform/xwiki-platform-distribution-war/11.10.7/xwiki-platform-distribution-war-11.10.7.war"
@@ -23,14 +23,18 @@ service tomcat stop
 
 ## Download, move current version and unpack
 cd ${InstallFiles}
-wget ${XWikiURL}
-if ! [ -d ${WebApps}/xwiki ]; then
- mkdir ${WebApps}/xwiki
- unzip ${InstallFiles}/${NewWAR} -d ${WebApps}/xwiki/
+if wget ${XWikiURL}; then
+        if ! [ -d ${WebApps}/xwiki ]; then
+                mkdir ${WebApps}/xwiki
+                unzip ${InstallFiles}/${NewWAR} -d ${WebApps}/xwiki/
+        else
+                rm -rf ${InstallFiles}/old_xwiki
+                mv ${WebApps}/xwiki ${InstallFiles}/old_xwiki
+                unzip ${InstallFiles}/${NewWAR}  -d ${WebApps}/xwiki/
+        fi
 else
- rm -rf ${InstallFiles}/old_xwiki
- mv ${WebApps}/xwiki ${InstallFiles}/old_xwiki
- unzip ${InstallFiles}/${NewWAR}  -d ${WebApps}/xwiki/
+        echo "Download failed, try again!"
+        exit
 fi
 
 ## Set the correct permissions and ownership
