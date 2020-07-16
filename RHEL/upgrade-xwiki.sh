@@ -14,8 +14,7 @@ else
 fi
 
 # Set initial values
-NewVersion=`echo ${XWikiURL} | sed -r 's/.*?(xwiki-platform-distribution-war-)([0-9|\.]*)(.war)/\2/'`
-LatestWAR=`echo ${XWikiURL} | sed -r 's/.*\/(.*.war)/\1/'`
+NewWAR=`echo ${XWikiURL} | sed -r 's/.*\/(.*.war)/\1/'`
 InstallFiles=/opt/install-files
 WebApps=/opt/tomcat/latest/webapps
 
@@ -27,11 +26,11 @@ cd ${InstallFiles}
 wget ${XWikiURL}
 if ! [ -d ${WebApps}/xwiki ]; then
  mkdir ${WebApps}/xwiki
- unzip ${InstallFiles}/${LatestWAR} -d ${WebApps}/xwiki/
+ unzip ${InstallFiles}/${NewWAR} -d ${WebApps}/xwiki/
 else
  rm -rf ${InstallFiles}/old_xwiki
  mv ${WebApps}/xwiki ${InstallFiles}/old_xwiki
- unzip ${InstallFiles}/${LatestWAR}  -d ${WebApps}/xwiki/
+ unzip ${InstallFiles}/${NewWAR}  -d ${WebApps}/xwiki/
 fi
 
 ## Set the correct permissions and ownership
