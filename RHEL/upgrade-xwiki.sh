@@ -23,7 +23,7 @@ service tomcat stop
 
 ## Download, move current version and unpack
 cd ${InstallFiles}
-if wget -N ${XWikiURL}; then
+if wget -N ${XWikiURL} --directory-prefix=${InstallFiles}; then
         if ! [ -d ${WebApps}/xwiki ]; then
                 mkdir ${WebApps}/xwiki
                 unzip ${InstallFiles}/${NewWAR} -d ${WebApps}/xwiki/

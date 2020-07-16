@@ -263,32 +263,16 @@ firewall-cmd --reload
 ### Download
 
 ```sh
-wget http://nexus.xwiki.org/nexus/content/groups/public/org/xwiki/platform/xwiki-platform-distribution-war/10.11.9/xwiki-platform-distribution-war-10.11.9.war --directory-prefix=/opt/tomcat/latest/
+wget -N http://nexus.xwiki.org/nexus/content/groups/public/org/xwiki/platform/xwiki-platform-distribution-war/10.11.9/xwiki-platform-distribution-war-10.11.9.war --directory-prefix=/opt/install-files/
 ```
 
-### Rename and move
+### Unpack XWiki to Tomcat
+
+First, we'll stop Tomcat so it doesn't try to process the contents of the folder we're unpacking into.
 
 ```sh
-mv xwiki-platform-distribution-war-10.11.9.war /opt/tomcat/latest/webapps/xwiki.war
-```
-
-### Unpack/expand the war-file
-
-```sh
-systemctl restart tomcat
-```
-
-This will cause a high load on the server while it unpacks the war into `/opt/tomcat/latest/webapps/xwiki`
-As soon as you can reach the tomcat-session on [the server through http](http://your-server-name:8080), it's time to stop Tomcat
-
-```sh
-systemctl stop tomcat
-```
-
-**Then, we'll remove the .war-file so Tomcat won't try to unpack/expand it and thereby overwriting our configuration-files**
-
-```sh
-rm /opt/tomcat/latest/webapps/xwiki.war
+service tomcat stop
+unzip /opt/install-files/xwiki-platform-distribution-war-10.11.9.war -d /opt/tomcat/latest/webapps/xwiki/
 ```
 
 #### /opt/tomcat/webapps/xwiki/WEB-INF/hibernate.cfg.xml
@@ -332,7 +316,7 @@ xwiki.store.attachment.versioning.hint=file
 xwiki.store.attachment.recyclebin.content.hint=file
 ```
 
-We also want to set the "correct" url so the cookies will be correct, since XWiki won't know it's behind a reverseproxy by default. This is done by adding this line to xwiki.cfg
+We also want to set the "correct" url so the cookies will be correct, since XWiki won't know it's behind a reverse-proxy by default. This is done by adding this line to xwiki.cfg
 
 ```ini
 xwiki.home=http://wiki.DOMAIN.TLD/
@@ -340,6 +324,7 @@ xwiki.home=http://wiki.DOMAIN.TLD/
 
 #### XWiki installation-process
   
+1. Start Tomcat so it starts up the XWiki application `service tomcat start`
 1. Begin by opening [http://SERVER](http://SERVER) (if nginx isn't working, you should be able to reach it by using [http://SERVER:8080/xwiki/](http://SERVER:8080/xwiki/) instead)  
 1. Create your XWiki user
 1. Select XWiki Standard Flavor for installation and install it
