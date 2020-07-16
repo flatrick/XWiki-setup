@@ -20,7 +20,7 @@ TomcatDest=/opt/tomcat
 
 ## Download && Unpack
 cd ${InstallFiles}
-if wget ${TomcatURL}; then
+if wget -N ${TomcatURL}; then
         if ! [ -d ${TomcatDest}/${NewTomcat} ]; then
                 mkdir ${TomcatDest}/${NewTomcat}
         fi
