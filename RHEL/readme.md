@@ -1,10 +1,12 @@
 # CentOS 7
+
 These instructions are written based on the following guides:  
 [How to Install MySQL 5.7 on CentOS/RHEL 7/6, Fedora 27/26/25](https://tecadmin.net/install-mysql-5-7-centos-rhel/)  
 [How to Install Latest MySQL 5.7.21 on RHEL/CentOS 7](https://dinfratechsource.com/2018/11/10/how-to-install-latest-mysql-5-7-21-on-rhel-centos-7/)  
 [How To Install Nginx on CentOS 7](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-centos-7)  
 
-# Install required software
+## Install required software
+
 ```sh
 yum install epel-release
 yum localinstall https://dev.mysql.com/get/mysql57-community-release-el7-9.noarch.rpm
@@ -15,89 +17,94 @@ yum install wget
 yum install nginx
 ```
 
-# MySQL
+## MySQL
 
 ## Get temporary MySQL Root password
+
 ```sh
 service mysqld start
 grep 'A temporary password' /var/log/mysqld.log |tail -1
 ```
 
-## Configure/secure installation
+### Configure/secure installation
+
 ```sh
 /usr/bin/mysql_secure_installation
 ```
 
-## Create database and user for XWiki
+### Create database and user for XWiki
 
 ```sh
 mysql -u root -p -e "create database xwiki default character set utf8 collate utf8_bin"
 mysql -u root -p -e "grant all privileges on *.* to xwiki@localhost identified by 'SOMETHING74f3H3r3?'"
 ```
-## Fine-tune for XWiki
+
+### Fine-tune for XWiki
 
 We will need to allow larger packets for situations where we upload large documents.
 First, run: `vi /etc/my.cnf`
 and add the following line:
 
-```
+```ini
 max_allowed_packet = 512M
 ```
 
-# Tomcat 9
+## Tomcat 9
 
-## Create user for Tomcat
+### Create user for Tomcat
 
 ```sh
 groupadd tomcat
 useradd -s /bin/false -g tomcat -d /opt/tomcat tomcat
 ```
 
-## Create the necessary folders
+### Create the necessary folders
 
 ```sh
 mkdir /opt/xwiki
 mkdir /opt/tomcat/9.0.26
 ```
 
-## Download & Unpack/Symlink Tomcat 
+### Download & Unpack/Symlink Tomcat
 
 ```sh
-wget http://apache.mirrors.spacedump.net/tomcat/tomcat-9/v9.0.26/bin/apache-tomcat-9.0.26.tar.gz 
+wget http://apache.mirrors.spacedump.net/tomcat/tomcat-9/v9.0.26/bin/apache-tomcat-9.0.26.tar.gz
 tar xzvf apache-tomcat-9.0.26.tar.gz -C /opt/tomcat/9.0.26 --strip-components=1
 ln -s /opt/tomcat/9.0.26 /opt/tomcat/latest
 ```
 
-## Configure
+### Configure
 
-### Tomcat environment
+#### Tomcat environment
+
 Now we need to edit the file where we'll set our environment-settings:  
 `vi /opt/tomcat/latest/bin/setenv.sh`
 
 ```sh
-#! /bin/bash 
-# Better garbage-collection 
-export CATALINA_OPTS="$CATALINA_OPTS -XX:+UseParallelGC" 
-# Instead of 1/6th or up to 192MB of physical memory for Minimum HeapSize 
-export CATALINA_OPTS="$CATALINA_OPTS -Xms512M" 
-# Instead of 1/4th of physical memory for Maximum HeapSize 
-export CATALINA_OPTS="$CATALINA_OPTS -Xmx1536M" 
-# Start the jvm with a hint that it's a server 
-export CATALINA_OPTS="$CATALINA_OPTS -server" 
-# Headless mode 
-export JAVA_OPTS="${JAVA_OPTS} -Djava.awt.headless=true" 
-# Allow \ and / in page-name 
-export CATALINA_OPTS="$CATALINA_OPTS -Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true" 
-export CATALINA_OPTS="$CATALINA_OPTS -Dorg.apache.catalina.connector.CoyoteAdapter.ALLOW_BACKSLASH=true" 
-# Set permanent directory 
+#! /bin/bash
+# Better garbage-collection
+export CATALINA_OPTS="$CATALINA_OPTS -XX:+UseParallelGC"
+# Instead of 1/6th or up to 192MB of physical memory for Minimum HeapSize
+export CATALINA_OPTS="$CATALINA_OPTS -Xms512M"
+# Instead of 1/4th of physical memory for Maximum HeapSize
+export CATALINA_OPTS="$CATALINA_OPTS -Xmx1536M"
+# Start the jvm with a hint that it's a server
+export CATALINA_OPTS="$CATALINA_OPTS -server"
+# Headless mode
+export JAVA_OPTS="${JAVA_OPTS} -Djava.awt.headless=true"
+# Allow \ and / in page-name
+export CATALINA_OPTS="$CATALINA_OPTS -Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true"
+export CATALINA_OPTS="$CATALINA_OPTS -Dorg.apache.catalina.connector.CoyoteAdapter.ALLOW_BACKSLASH=true"
+# Set permanent directory
 export CATALINA_OPTS="$CATALINA_OPTS -Dxwiki.data.dir=/opt/xwiki/"
 ```
 
-### Configure Tomcat to use UTF-8 encoding
+#### Configure Tomcat to use UTF-8 encoding
 
 You'll need to edit `/opt/tomcat/latest/conf/server.xml` and ensure that the connector for port 8080 has this option: `URIEncoding="UTF-8"`  
 
 Example on how it could look:  
+
 ```xml
 <Connector port="8080" maxHttpHeaderSize="8192"
     maxThreads="150" minSpareThreads="25" maxSpareThreads="75"
@@ -106,14 +113,14 @@ Example on how it could look:
     URIEncoding="UTF-8"/>
 ```
 
-### Set correct permissions
+#### Set correct permissions
 
 ```sh
 chown -RH tomcat: /opt/tomcat/latest/ /opt/xwiki
 chmod +x /opt/tomcat/latest/bin/*.sh
 ```
 
-## Set up as a systemd service
+#### Set up as a systemd service
 
 The command `alternatives --list |grep java` will show you which versions of Java are installed on the server, ensure you see 1.8.0 here before continuing.
 
@@ -157,7 +164,7 @@ firewall-cmd --permanent --add-port=8080/tcp
 firewall-cmd --reload
 ```
 
-### manager & host-manager
+#### manager & host-manager
 
 Edit `/opt/tomcat/webapps/manager/META-INF/context.xml`
 and `/opt/tomcat/webapps/host-manager/META-INF/context.xml`
@@ -169,17 +176,18 @@ The example above will give access to the host-manager and manager-applications 
 
 **TODO:** Describe how to create users for **manager** & **host-manager**
 
-### Add support for MySQL
+#### Add support for MySQL
 
 ```sh
 cd /opt/tomcat/latest/lib/
 wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.48.tar.gz
-tar xzf mysql-connector-java-5.1.48.tar.gz 
+tar xzf mysql-connector-java-5.1.48.tar.gz
 mv mysql-connector-java-5.1.48/*.jar ./
 rm -rf mysql-connector-java-5.1.48/ mysql-connector-java-5.1.48.tar.gz
 chown tomcat:tomcat mysql*
 ```
-# NginX
+
+## NginX
 
 We'll need to create a configuration file for NginX to act as a reverse proxy for our website:
 `vi /etc/nginx/conf.d/tomcat.conf`
@@ -206,7 +214,7 @@ expires $expires;
 
 server {
     listen       80;
-    server_name  wiki.DOMAIN.TLD wiki; 
+    server_name  wiki.DOMAIN.TLD wiki;
     charset utf-8;
     client_max_body_size 64M;
 
@@ -233,7 +241,8 @@ server {
     }
 }
 ```
-## SELinux
+
+### SELinux
 
 Since CentOS7 uses SELinux, you will also need to allow nginx to act as a reverse proxy by running this command:  
 
@@ -241,29 +250,29 @@ Since CentOS7 uses SELinux, you will also need to allow nginx to act as a revers
 setsebool -P httpd_can_network_connect true
 ```
 
-## Allow HTTP/HTTPS access
+### Allow HTTP/HTTPS access
 
 ```sh
-firewall-cmd --permanent --zone=public --add-service=http 
+firewall-cmd --permanent --zone=public --add-service=http
 firewall-cmd --permanent --zone=public --add-service=https
 firewall-cmd --reload
 ```
 
-# XWiki
+## XWiki
 
-## Download
+### Download
 
 ```sh
 wget http://nexus.xwiki.org/nexus/content/groups/public/org/xwiki/platform/xwiki-platform-distribution-war/10.11.9/xwiki-platform-distribution-war-10.11.9.war --directory-prefix=/opt/tomcat/latest/
 ```
 
-## Rename and move 
+### Rename and move
 
 ```sh
 mv xwiki-platform-distribution-war-10.11.9.war /opt/tomcat/latest/webapps/xwiki.war
 ```
 
-## Unpack/expand the war-file
+### Unpack/expand the war-file
 
 ```sh
 systemctl restart tomcat
@@ -284,67 +293,69 @@ rm /opt/tomcat/latest/webapps/xwiki.war
 
 #### /opt/tomcat/webapps/xwiki/WEB-INF/hibernate.cfg.xml
 
-**TODO:** Describe necessary configuration here to connect XWiki to a database 
- 
-#### /opt/tomcat/webapps/xwiki/WEB-INF/xwiki.properties 
+TODO: Describe necessary configuration here to connect XWiki to a database
 
-These are the settings necessary to edit before we can continue with the actual installation of XWiki. 
+##### /opt/tomcat/webapps/xwiki/WEB-INF/xwiki.properties
+
+These are the settings necessary to edit before we can continue with the actual installation of XWiki.
 Since we have defined `xwiki.data.dir` in `setenv.sh`, this setting can be left commented out,  
 I've left this note of the setting here to show a different way of handling it in case you don't want the setting to be globally known throughout the Tomcat-server.
 
 ```ini
-environment.permanentDirectory=/opt/xwiki/ 
+environment.permanentDirectory=/opt/xwiki/
 ```
 
-#### /opt/tomcat/webapps/xwiki/WEB-INF/xwiki.cfg 
+#### /opt/tomcat/webapps/xwiki/WEB-INF/xwiki.cfg
 
 We need to edit these two lines so we aren't using the default keys (out of security-reasons).  
+
 ```ini
-xwiki.authentication.validationKey=totototototototototototototototo 
+xwiki.authentication.validationKey=totototototototototototototototo
 xwiki.authentication.encryptionKey=titititititititititititititititi
 ```
   
-We also want to modify how attachments are stored, in later versions of XWiki (10.2 and later), the default is to store attachments as files directly on the drive. 
+We also want to modify how attachments are stored, in later versions of XWiki (10.2 and later), the default is to store attachments as files directly on the drive.
+
 ```ini
-#-# [Since 9.0RC1] The default document content recycle bin storage. Default is hibernate. 
-#-# This property is only taken into account when deleting a document and has no effect on already deleted documents. 
-xwiki.store.recyclebin.content.hint=file 
+#-# [Since 9.0RC1] The default document content recycle bin storage. Default is hibernate.
+#-# This property is only taken into account when deleting a document and has no effect on already deleted documents.
+xwiki.store.recyclebin.content.hint=file
 
-#-# The attachment storage. [Since 3.4M1] default is hibernate. 
-xwiki.store.attachment.hint=file 
+#-# The attachment storage. [Since 3.4M1] default is hibernate.
+xwiki.store.attachment.hint=file
 
-#-# The attachment versioning storage. Use 'void' to disable attachment versioning. [Since 3.4M1] default is hibernate. 
-xwiki.store.attachment.versioning.hint=file 
+#-# The attachment versioning storage. Use 'void' to disable attachment versioning. [Since 3.4M1] default is hibernate.
+xwiki.store.attachment.versioning.hint=file
 
-#-# [Since 9.9RC1] The default attachment content recycle bin storage. Default is hibernate. 
-#-# This property is only taken into account when deleting an attachment and has no effect on already deleted documents. 
+#-# [Since 9.9RC1] The default attachment content recycle bin storage. Default is hibernate.
+#-# This property is only taken into account when deleting an attachment and has no effect on already deleted documents.
 xwiki.store.attachment.recyclebin.content.hint=file
 ```
+
 We also want to set the "correct" url so the cookies will be correct, since XWiki won't know it's behind a reverseproxy by default. This is done by adding this line to xwiki.cfg
+
 ```ini
 xwiki.home=http://wiki.DOMAIN.TLD/
 ```
 
-  
-#### XWiki installation-process 
+#### XWiki installation-process
   
 1. Begin by opening [http://SERVER](http://SERVER) (if nginx isn't working, you should be able to reach it by using [http://SERVER:8080/xwiki/](http://SERVER:8080/xwiki/) instead)  
 1. Create your XWiki user
-1. Select XWiki Standard Flavor for installation and install it 
-  
-  
-### XWiki database optimization 
-  
+1. Select XWiki Standard Flavor for installation and install it
+
+### XWiki database optimization
+
 After-install tuneup of MySQL database:
 
 ```sh
 sudo mysql -u root -e "create index xwl_value on xwikilargestrings (xwl_value(50)); create index xwd_parent on xwikidoc (xwd_parent(50)); create index xwd_class_xml on xwikidoc (xwd_class_xml(20)); create index ase_page_date on  activitystream_events (ase_page, ase_date); create index xda_docid1 on xwikiattrecyclebin (xda_docid); create index ase_param1 on activitystream_events (ase_param1(200)); create index ase_param2 on activitystream_events (ase_param2(200)); create index ase_param3 on activitystream_events (ase_param3(200)); create index ase_param4 on activitystream_events (ase_param4(200)); create index ase_param5 on activitystream_events (ase_param5(200));" xwiki
 ```
- 
-# Backup-management 
+
+## Backup-management
   
 [Backup/Restore](https://www.xwiki.org/xwiki/bin/view/Documentation/AdminGuide/Backup)  
-Configure the script below to run on a daily basis through a cron-job 
+Configure the script below to run on a daily basis through a cron-job
   
 ```sh
 #!/bin/bash
@@ -415,10 +426,11 @@ find $BackupFolder -daystart -mtime +90 -type f -name "*.log" -print0 | xargs -0
 
 Add the following line to `/etc/crontab` so our scripts runs daily at 01:00 (AM)
 
-```
+```cron
 0 1 * * *   root    /opt/backup/backup.sh > /dev/null 2>&1
 ```
 
-# Firewall
+## Firewall
+
 If you've followed all steps until now, you already should have a firewall configured and up and running.
 You might choose to restrict direct access to the tomcat-session (on port 8080) but that's up to you.
