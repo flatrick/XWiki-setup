@@ -14,15 +14,15 @@ else
 fi
 
 # Set initial values
-NewVersion=`echo $TomcatURL | sed -r 's/.*?(apache-tomcat-)([0-9|\.]*)(.tar.gz)/\2/'`
+NewTomcat=`echo $TomcatURL | sed -r 's/.*?(apache-tomcat-)([0-9|\.]*)(.tar.gz)/\2/'`
 InstallFiles=/opt/install-files
 TomcatDest=/opt/tomcat
 
 ## Download && Unpack
 cd ${InstallFiles}
 wget ${TomcatURL}
-if ! [ -d ${TomcatDest}/${NewVersion} ]; then mkdir ${TomcatDest}/${NewVersion}; fi
-tar xzvf ${InstallFiles}/apache-tomcat-${NewVersion}.tar.gz -C ${TomcatDest}/${NewVersion} --strip-components=1
+if ! [ -d ${TomcatDest}/${NewTomcat} ]; then mkdir ${TomcatDest}/${NewTomcat}; fi
+tar xzvf ${InstallFiles}/apache-tomcat-${NewTomcat}.tar.gz -C ${TomcatDest}/${NewTomcat} --strip-components=1
 
 
 ## Stop current version of TomCat
@@ -30,7 +30,7 @@ tar xzvf ${InstallFiles}/apache-tomcat-${NewVersion}.tar.gz -C ${TomcatDest}/${N
 ## Set correct permissions on files
 service tomcat stop
 if [ -L ${TomcatDest}/latest ]; then OldVersion=`readlink ${TomcatDest}/latest`; rm ${TomcatDest}/latest; fi
-ln -s ${TomcatDest}/${NewVersion} ${TomcatDest}/latest
+ln -s ${TomcatDest}/${NewTomcat} ${TomcatDest}/latest
 chown -RH tomcat: ${TomcatDest}/latest
 chmod +x ${TomcatDest}/latest/bin/*.sh
 
