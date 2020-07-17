@@ -69,7 +69,7 @@ mkdir /opt/tomcat/9.0.26
 
 ```sh
 wget http://apache.mirrors.spacedump.net/tomcat/tomcat-9/v9.0.26/bin/apache-tomcat-9.0.26.tar.gz
-tar xzvf apache-tomcat-9.0.26.tar.gz -C /opt/tomcat/9.0.26 --strip-components=1
+tar xzf apache-tomcat-9.0.26.tar.gz -C /opt/tomcat/9.0.26 --strip-components=1
 ln -s /opt/tomcat/9.0.26 /opt/tomcat/latest
 ```
 
@@ -99,7 +99,7 @@ export CATALINA_OPTS="$CATALINA_OPTS -Dorg.apache.catalina.connector.CoyoteAdapt
 export CATALINA_OPTS="$CATALINA_OPTS -Dxwiki.data.dir=/opt/xwiki/"
 ```
 
-#### Configure Tomcat to use UTF-8 encoding
+#### Use UTF-8 encoding
 
 You'll need to edit `/opt/tomcat/latest/conf/server.xml` and ensure that the connector for port 8080 has this option: `URIEncoding="UTF-8"`  
 
@@ -179,12 +179,11 @@ The example above will give access to the host-manager and manager-applications 
 #### Add support for MySQL
 
 ```sh
-cd /opt/tomcat/latest/lib/
-wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.48.tar.gz
-tar xzf mysql-connector-java-5.1.48.tar.gz
-mv mysql-connector-java-5.1.48/*.jar ./
-rm -rf mysql-connector-java-5.1.48/ mysql-connector-java-5.1.48.tar.gz
-chown tomcat:tomcat mysql*
+cd /opt/install-files/
+wget -N https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.48.tar.gz --directory-prefix=/opt/install-files/
+tar xzf /opt/install-files/mysql-connector-java-5.1.48.tar.gz mysql-connector-java-5.1.48/mysql-connector-java-5.1.48.jar --strip-components=1
+mv /opt/install-files/mysql-connector-java-5.1.48.jar /opt/tomcat/latest/lib/
+chown tomcat:tomcat /opt/tomcat/latest/lib/
 ```
 
 ## NginX
