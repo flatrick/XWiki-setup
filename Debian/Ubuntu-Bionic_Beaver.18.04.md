@@ -265,21 +265,16 @@ service tomcat stop
 unzip /opt/install-files/xwiki-platform-distribution-war-10.11.9.war -d /opt/tomcat/latest/webapps/xwiki/
 ```
 
-### /opt/tomcat/latest/webapps/xwiki/WEB-INF/hibernate.cfg.xml
+#### /opt/tomcat/latest/webapps/xwiki/WEB-INF/hibernate.cfg.xml
 
 **TODO:** Describe necessary configuration here to connect XWiki to a database
 
-### /opt/tomcat/webapps/xwiki/WEB-INF/xwiki.properties
+#### /opt/tomcat/webapps/xwiki/WEB-INF/xwiki.properties
 
-These are the settings necessary to edit before we can continue with the actual installation of XWiki.  
-Since we have defined `xwiki.data.dir` in `setenv.sh`, this setting can be left commented out,  
+**OBSERVE** Since we have defined `xwiki.data.dir` in `setenv.sh`, we can leave `environment.permanentDirectory` commented out in this file.  
 I've left this note of the setting here to show a different way of handling it in case you don't want the setting to be globally known throughout the Tomcat-server.
 
-```ini
-environment.permanentDirectory=/opt/xwiki/
-```
-
-### /opt/tomcat/webapps/xwiki/WEB-INF/xwiki.cfg
+#### /opt/tomcat/webapps/xwiki/WEB-INF/xwiki.cfg
 
 We need to edit these two lines so we aren't using the default keys (out of security-reasons).
 
@@ -318,7 +313,7 @@ xwiki.home=http://wiki.DOMAIN.TLD/
 1. Create your XWiki user
 1. Select XWiki Standard Flavor for installation and install it
   
-### XWiki database optimization
+#### XWiki database optimization
 
 After-install tuneup of MySQL database
 

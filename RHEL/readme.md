@@ -279,7 +279,7 @@ unzip /opt/install-files/xwiki-platform-distribution-war-10.11.9.war -d /opt/tom
 
 TODO: Describe necessary configuration here to connect XWiki to a database
 
-##### /opt/tomcat/webapps/xwiki/WEB-INF/xwiki.properties
+#### /opt/tomcat/webapps/xwiki/WEB-INF/xwiki.properties
 
 **OBSERVE** Since we have defined `xwiki.data.dir` in `setenv.sh`, we can leave `environment.permanentDirectory` commented out in this file.  
 I've left this note of the setting here to show a different way of handling it in case you don't want the setting to be globally known throughout the Tomcat-server.
@@ -317,7 +317,7 @@ We also want to set the "correct" url so the cookies will be correct, since XWik
 xwiki.home=http://wiki.DOMAIN.TLD/
 ```
 
-#### XWiki installation-process
+### XWiki installation-process
   
 1. Start Tomcat so it starts up the XWiki application `service tomcat start`
 1. Begin by opening [http://SERVER](http://SERVER) (if nginx isn't working, you should be able to reach it by using [http://SERVER:8080/xwiki/](http://SERVER:8080/xwiki/) instead)  
