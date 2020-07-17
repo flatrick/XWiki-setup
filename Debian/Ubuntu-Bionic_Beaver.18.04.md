@@ -77,21 +77,21 @@ Now we need to edit the file where we'll set our environment-settings:
 `vi /opt/tomcat/latest/bin/setenv.sh`
 
 ```sh
-#! /bin/bash 
-# Better garbage-collection 
-export CATALINA_OPTS="$CATALINA_OPTS -XX:+UseParallelGC" 
-# Instead of 1/6th or up to 192MB of physical memory for Minimum HeapSize 
-export CATALINA_OPTS="$CATALINA_OPTS -Xms512M" 
-# Instead of 1/4th of physical memory for Maximum HeapSize 
-export CATALINA_OPTS="$CATALINA_OPTS -Xmx1536M" 
-# Start the jvm with a hint that it's a server 
-export CATALINA_OPTS="$CATALINA_OPTS -server" 
-# Headless mode 
-export JAVA_OPTS="${JAVA_OPTS} -Djava.awt.headless=true" 
-# Allow \ and / in page-name 
-export CATALINA_OPTS="$CATALINA_OPTS -Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true" 
-export CATALINA_OPTS="$CATALINA_OPTS -Dorg.apache.catalina.connector.CoyoteAdapter.ALLOW_BACKSLASH=true" 
-# Set permanent directory 
+#! /bin/bash
+# Better garbage-collection
+export CATALINA_OPTS="$CATALINA_OPTS -XX:+UseParallelGC"
+# Instead of 1/6th or up to 192MB of physical memory for Minimum HeapSize
+export CATALINA_OPTS="$CATALINA_OPTS -Xms512M"
+# Instead of 1/4th of physical memory for Maximum HeapSize
+export CATALINA_OPTS="$CATALINA_OPTS -Xmx1536M"
+# Start the jvm with a hint that it's a server
+export CATALINA_OPTS="$CATALINA_OPTS -server"
+# Headless mode
+export JAVA_OPTS="${JAVA_OPTS} -Djava.awt.headless=true"
+# Allow \ and / in page-name
+export CATALINA_OPTS="$CATALINA_OPTS -Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true"
+export CATALINA_OPTS="$CATALINA_OPTS -Dorg.apache.catalina.connector.CoyoteAdapter.ALLOW_BACKSLASH=true"
+# Set permanent directory
 export CATALINA_OPTS="$CATALINA_OPTS -Dxwiki.data.dir=/opt/xwiki/"
 ```
 
@@ -116,7 +116,7 @@ chown -RH tomcat: /opt/tomcat/latest/ /opt/xwiki
 chmod +x /opt/tomcat/latest/bin/*.sh
 ```
 
-### Set up as a systemd service
+#### Set up as a systemd service
 
 The command `update-java-alternatives -l` will show us the installed versions of **Java**, use this to ensure that version **1.8.0** is installed.  
 _If you installed a different version of Java, you will need to change **java-1.8.0-openjdk-amd64** to the correct one for your installation._
@@ -160,7 +160,7 @@ After saving the file above, run the following commands to start the service and
  sudo ufw allow 8080/tcp
 ```
 
-### manager & host-manager
+#### manager & host-manager
 
 Edit `/opt/tomcat/webapps/manager/META-INF/context.xml`
 and `/opt/tomcat/webapps/host-manager/META-INF/context.xml`
@@ -172,7 +172,7 @@ The example above will give access to the host-manager and manager-applications 
 
 **TODO:** Describe how to create users for **manager** & **host-manager**
 
-### Add support for MySQL
+#### Add support for MySQL
 
 Do note that the path `mysql-connector-java-5.1.48/mysql-connector-java-5.1.48.jar` will change with a newer version of the MySQL Connector for Java.  
 Run `tar ztf mysql-connector-java-{VERSIONNUMBER}.tar.gz |  grep .jar` to find the correct path for the version you've downloaded.
@@ -289,7 +289,7 @@ xwiki.authentication.encryptionKey=titititititititititititititititi
 We also want to modify how attachments are stored, in later versions of XWiki (10.2 and later), the default is to store attachments as files directly on the drive.
 
 ```ini
-#-# [Since 9.0RC1] The default document content recycle bin storage. Default is hibernate. 
+#-# [Since 9.0RC1] The default document content recycle bin storage. Default is hibernate.
 #-# This property is only taken into account when deleting a document and has no effect on already deleted documents.
 xwiki.store.recyclebin.content.hint=file
 
@@ -323,7 +323,6 @@ After-install tuneup of MySQL database
 ```sh
 sudo mysql -u root -e "create index xwl_value on xwikilargestrings (xwl_value(50)); create index xwd_parent on xwikidoc (xwd_parent(50)); create index xwd_class_xml on xwikidoc (xwd_class_xml(20)); create index ase_page_date on  activitystream_events (ase_page, ase_date); create index xda_docid1 on xwikiattrecyclebin (xda_docid); create index ase_param1 on activitystream_events (ase_param1(200)); create index ase_param2 on activitystream_events (ase_param2(200)); create index ase_param3 on activitystream_events (ase_param3(200)); create index ase_param4 on activitystream_events (ase_param4(200)); create index ase_param5 on activitystream_events (ase_param5(200));" xwiki
 ```
-
 
 ## Backup-management
   
@@ -396,7 +395,6 @@ find $BackupFolder -daystart -mtime +28 -type f -name "*.tar.gz" -print0 | xargs
 find $BackupFolder -daystart -mtime +7 -type f -name "*.sql" -print0 | xargs -0 -r rm
 find $BackupFolder -daystart -mtime +90 -type f -name "*.log" -print0 | xargs -0 -r rm
 ```
-
 
 Add the following line to `/etc/crontab` so our scripts runs daily at 01:00 (AM)
 
