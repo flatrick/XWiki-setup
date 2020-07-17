@@ -324,7 +324,7 @@ xwiki.home=http://wiki.DOMAIN.TLD/
 1. Create your XWiki user
 1. Select XWiki Standard Flavor for installation and install it
 
-##### XWiki database optimization
+#### XWiki database optimization
 
 After-install tuneup of MySQL database:
 
