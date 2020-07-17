@@ -189,14 +189,9 @@ exit
 
 ## nginx
 
-Open access to nginx through the firewall
+We need to configure nginx to work as a reverse-proxy so any users trying to access the server on port 80 (default HTTP) will behind the curtains reach our Tomcat/XWiki on port 8080  
 
-```sh
- sudo ufw allow http
- sudo ufw allow https
-```
-
-Now we need to configure nginx to work as a reverse-proxy so any users trying to access the server on port 80 (default HTTP) will behind the curtains reach our Tomcat/XWiki on port 8080
+Edit the file `/etc/nginx/conf.d/tomcat.conf` as shown below
 
 ```nginx
 ## Expires map based upon HTTP Response Header Content-Type
@@ -246,6 +241,13 @@ server {
        expires                 $expires;
     }
 }
+```
+
+### Open access to nginx through the firewall
+
+```sh
+ sudo ufw allow http
+ sudo ufw allow https
 ```
 
 ## XWiki

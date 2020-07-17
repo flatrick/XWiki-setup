@@ -188,10 +188,11 @@ mv /opt/install-files/mysql-connector-java-5.1.48.jar /opt/tomcat/latest/lib/
 chown tomcat:tomcat /opt/tomcat/latest/lib/
 ```
 
-## NginX
+## nginx
 
-We'll need to create a configuration file for NginX to act as a reverse proxy for our website:
-`vi /etc/nginx/conf.d/tomcat.conf`
+We need to configure nginx to work as a reverse-proxy so any users trying to access the server on port 80 (default HTTP) will behind the curtains reach our Tomcat/XWiki on port 8080  
+
+Edit the file `/etc/nginx/conf.d/tomcat.conf` as shown below
 
 ```nginx
 ## Expires map based upon HTTP Response Header Content-Type
@@ -251,7 +252,7 @@ Since CentOS7 uses SELinux, you will also need to allow nginx to act as a revers
 setsebool -P httpd_can_network_connect true
 ```
 
-### Allow HTTP/HTTPS access
+### Open access to nginx through the firewall
 
 ```sh
 firewall-cmd --permanent --zone=public --add-service=http
