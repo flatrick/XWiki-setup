@@ -178,6 +178,9 @@ The example above will give access to the host-manager and manager-applications 
 
 #### Add support for MySQL
 
+Do note that the path `mysql-connector-java-5.1.48/mysql-connector-java-5.1.48.jar` will change with a newer version of the MySQL Connector for Java.  
+Run `tar ztf mysql-connector-java-{VERSIONNUMBER}.tar.gz |  grep .jar` to find the correct path for the version you've downloaded.
+
 ```sh
 cd /opt/install-files/
 wget -N https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.48.tar.gz --directory-prefix=/opt/install-files/
@@ -259,15 +262,13 @@ firewall-cmd --reload
 
 ## XWiki
 
-### Download
+### Download & unpack XWiki
 
 ```sh
 wget -N http://nexus.xwiki.org/nexus/content/groups/public/org/xwiki/platform/xwiki-platform-distribution-war/10.11.9/xwiki-platform-distribution-war-10.11.9.war --directory-prefix=/opt/install-files/
 ```
 
-### Unpack XWiki to Tomcat
-
-First, we'll stop Tomcat so it doesn't try to process the contents of the folder we're unpacking into.
+Next, we'll stop Tomcat so it doesn't try to process the contents of the folder we're unpacking into.
 
 ```sh
 service tomcat stop
@@ -280,17 +281,12 @@ TODO: Describe necessary configuration here to connect XWiki to a database
 
 ##### /opt/tomcat/webapps/xwiki/WEB-INF/xwiki.properties
 
-These are the settings necessary to edit before we can continue with the actual installation of XWiki.
-Since we have defined `xwiki.data.dir` in `setenv.sh`, this setting can be left commented out,  
+**OBSERVE** Since we have defined `xwiki.data.dir` in `setenv.sh`, we can leave `environment.permanentDirectory` commented out in this file.  
 I've left this note of the setting here to show a different way of handling it in case you don't want the setting to be globally known throughout the Tomcat-server.
-
-```ini
-environment.permanentDirectory=/opt/xwiki/
-```
 
 #### /opt/tomcat/webapps/xwiki/WEB-INF/xwiki.cfg
 
-We need to edit these two lines so we aren't using the default keys (out of security-reasons).  
+We need to edit these two lines so we aren't using the default keys (for security).  
 
 ```ini
 xwiki.authentication.validationKey=totototototototototototototototo
@@ -328,7 +324,7 @@ xwiki.home=http://wiki.DOMAIN.TLD/
 1. Create your XWiki user
 1. Select XWiki Standard Flavor for installation and install it
 
-### XWiki database optimization
+##### XWiki database optimization
 
 After-install tuneup of MySQL database:
 
