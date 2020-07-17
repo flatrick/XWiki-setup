@@ -1,4 +1,5 @@
 # FreeNAS 11.2 RC2
+
 ## FreeNAS and Java
   
 **README**
@@ -34,6 +35,7 @@ To make it permanent, you need the following lines in /etc/fstab:
 ```
   
 ### Tasks - Init/Shutdown scripts
+
 #### fdescfs
   
 |||
@@ -55,6 +57,7 @@ To make it permanent, you need the following lines in /etc/fstab:
 **Note** For these scripts to work, we will need to reboot the server before continuing!
   
 ## FreeBSD/FreeNAS install of packages
+
 ```sh
  pkg update
  pkg install openjdk8
@@ -69,17 +72,20 @@ pkg install mysql-connector-java-5.1.47 mysql57-server
 ```  
 
 After installing our mysql57-server, we need to enable the service and start it.
+
 ```sh
 printf '\n# Enable MySQL server\nmysql_enable="YES"\n' >> /etc/rc.conf
 service mysql-server start
 ```
 
 When it starts for the first time, it will create a file containing our MySQL-root users password, so we now need to take a look at `/root/.mysql_secret` and write down the password for later use.
+
 ```sh
 cat /root/.mysql_secret
 ```
 
 Just to make sure our password is correct, let's give it a try!
+
 ```sh
 mysql --user=root --password="YOURPASSWORDHERE" --host=localhost
 ```
@@ -97,7 +103,7 @@ vi /usr/local/apache-tomcat-9/bin/setenv.sh
 
 In this file, add the following lines:
 
-```
+```sh
 #! /bin/bash 
 
 # Better garbage-collection 
@@ -124,6 +130,7 @@ export CATALINA_OPTS="$CATALINA_OPTS -Dxwiki.data.dir=/usr/local/opt/xwiki/"
 ```
 
 Then we'll change it's permissions:
+
 ```sh
 chmod 755 /usr/local/apache-tomcat-9.0/bin/setenv.sh
 ```
@@ -137,6 +144,7 @@ chown -R root:wheel /usr/local/opt/xwiki/
 
 Before we start Tomcat for the first time, we'll configure `host-manager` and `manager` so we can login and manage our Tomcat-servlet using it's webGUI.
 To do so, we need to edit these two files:
+
 ```sh 
 /usr/local/apache-tomcat-9.0/webapps/manager/META-INF/context.xml
 /usr/local/apache-tomcat-9.0/webapps/host-manager/META-INF/context.xml
@@ -144,6 +152,7 @@ To do so, we need to edit these two files:
 
 Open these two files and edit the line `allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1" />` so your IP-address is allowed to connect.
 If you want to allow all IPs starting with 192.168.100. for example, it could look like this:
+
 ```sh
 allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1|192\.168\.100\.\d+" />
 ```
@@ -153,7 +162,6 @@ After this, we want to edit `tomcat-users.xml` so we can login to the two differ
 ```sh
 <user username="tomcat-admin" password="MYSECRETPASSWORD" roles="admin-gui,manager-gui,manager-status"/>
 ```
-
 
 Now we're ready to startup Tomcat!
 
@@ -168,17 +176,14 @@ The unpacked war will exist in `/usr/local/apache-tomcat-9.0/webapps/xwiki/` whe
 
 When it's done unpacking, we can choose to stop Tomcat and then remove the war-file, or just keep the war-file, it shouldn't make a difference if it stays in the folder.
 
-
-
-#### /usr/local/apache-tomcat-9.0/webapps/xwiki/WEB-INF/hibernate.cfg.xml
+### /usr/local/apache-tomcat-9.0/webapps/xwiki/WEB-INF/hibernate.cfg.xml
 
 **FIX ME!**
 
-
-#### /usr/local/apache-tomcat-9.0/webapps/xwiki/WEB-INF/xwiki.properties 
+#### /usr/local/apache-tomcat-9.0/webapps/xwiki/WEB-INF/xwiki.properties
 
 **FIX ME!**
 
-#### /usr/local/apache-tomcat-9.0/webapps/xwiki/WEB-INF/xwiki.cfg 
+#### /usr/local/apache-tomcat-9.0/webapps/xwiki/WEB-INF/xwiki.cfg
 
 **FIX ME!**
