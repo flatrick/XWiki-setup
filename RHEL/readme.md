@@ -7,19 +7,19 @@ These instructions are written based on the following guides:
 
 ## Install required software
 
+As of 2018-11-22, XWiki doesn't support Java 9+ so we need to install a Java 8 Runtime.  
+For licensing-reasons, the instructions below describe how to install the OpenJDK.
+
 ```sh
 yum install epel-release
 yum localinstall https://dev.mysql.com/get/mysql57-community-release-el7-9.noarch.rpm
 yum update
-yum install java-1.8.0-openjdk-devel
-yum install mysql-community-server
-yum install wget
-yum install nginx
+yum install java-1.8.0-openjdk-devel mysql-community-server wget nginx
 ```
 
 ## MySQL
 
-## Get temporary MySQL Root password
+### Get temporary MySQL Root password
 
 ```sh
 service mysqld start
@@ -42,8 +42,7 @@ mysql -u root -p -e "grant all privileges on *.* to xwiki@localhost identified b
 ### Fine-tune for XWiki
 
 We will need to allow larger packets for situations where we upload large documents.
-First, run: `vi /etc/my.cnf`
-and add the following line:
+Edit `/etc/my.cnf` and add the following line:
 
 ```ini
 max_allowed_packet = 512M
