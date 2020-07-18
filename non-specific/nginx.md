@@ -1,4 +1,4 @@
-# /etc/nginx/conf.d/tomcat.conf #
+# /etc/nginx/conf.d/tomcat.conf
 
 ## Unsolved issues
 
@@ -27,7 +27,7 @@ expires $expires;
 
 server {
     listen       80;
-    server_name  wiki.DOMAIN.TLD wiki; 
+    server_name  wiki.DOMAIN.TLD wiki;
     charset utf-8;
 
     # Normally root should not be accessed, however, root should not serve files that might compromise the security of your server.

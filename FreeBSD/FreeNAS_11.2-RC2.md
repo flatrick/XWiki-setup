@@ -9,29 +9,26 @@ It should be possible to do this by running a couple of iocage commands
 iocage set mount_fdescfs=1 JAILNAME
 iocage set mount_procfs=1 JAILNAME
 ```
+
 [iocage](https://www.freebsd.org/cgi/man.cgi?query=iocage)  
 [jail](https://www.freebsd.org/cgi/man.cgi?query=jail)  
 **END README**
 
 For Java to work in our Jail, we'll need to add a couple of Pre-Init scripts in FreeNAS since we can't run the two commands the installation of openjdk8 will ask us to do, nor will it work editing the jails fstab.
 
-```
-======================================================================
+```sh
+#This OpenJDK implementation requires fdescfs(5) mounted on /dev/fd and
+#procfs(5) mounted on /proc.
 
-This OpenJDK implementation requires fdescfs(5) mounted on /dev/fd and
-procfs(5) mounted on /proc.
-
-If you have not done it yet, please do the following:
+#If you have not done it yet, please do the following:
 
         mount -t fdescfs fdesc /dev/fd
         mount -t procfs proc /proc
 
-To make it permanent, you need the following lines in /etc/fstab:
+#To make it permanent, you need the following lines in /etc/fstab:
 
         fdesc   /dev/fd         fdescfs         rw      0       0
         proc    /proc           procfs          rw      0       0
-
-======================================================================
 ```
   
 ### Tasks - Init/Shutdown scripts
@@ -90,7 +87,6 @@ Just to make sure our password is correct, let's give it a try!
 mysql --user=root --password="YOURPASSWORDHERE" --host=localhost
 ```
   
-  
 ## Tomcat
 
 [Install Tomcat 8 In FreeBSD 10/10.1](https://www.unixmen.com/install-tomcat-7-freebsd-9-3/)  
@@ -104,28 +100,28 @@ vi /usr/local/apache-tomcat-9/bin/setenv.sh
 In this file, add the following lines:
 
 ```sh
-#! /bin/bash 
+#! /bin/bash
 
-# Better garbage-collection 
-export CATALINA_OPTS="$CATALINA_OPTS -XX:+UseParallelGC" 
+# Better garbage-collection
+export CATALINA_OPTS="$CATALINA_OPTS -XX:+UseParallelGC"
 
-# Instead of 1/6th or up to 192MB of physical memory for Minimum HeapSize 
-export CATALINA_OPTS="$CATALINA_OPTS -Xms512M" 
+# Instead of 1/6th or up to 192MB of physical memory for Minimum HeapSize
+export CATALINA_OPTS="$CATALINA_OPTS -Xms512M"
 
-# Instead of 1/4th of physical memory for Maximum HeapSize 
-export CATALINA_OPTS="$CATALINA_OPTS -Xmx1536M" 
+# Instead of 1/4th of physical memory for Maximum HeapSize
+export CATALINA_OPTS="$CATALINA_OPTS -Xmx1536M"
 
-# Start the jvm with a hint that it's a server 
-export CATALINA_OPTS="$CATALINA_OPTS -server" 
+# Start the jvm with a hint that it's a server
+export CATALINA_OPTS="$CATALINA_OPTS -server"
 
-# Headless mode 
-export JAVA_OPTS="${JAVA_OPTS} -Djava.awt.headless=true" 
+# Headless mode
+export JAVA_OPTS="${JAVA_OPTS} -Djava.awt.headless=true"
 
-# Allow \ and / in page-name 
-export CATALINA_OPTS="$CATALINA_OPTS -Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true" 
-export CATALINA_OPTS="$CATALINA_OPTS -Dorg.apache.catalina.connector.CoyoteAdapter.ALLOW_BACKSLASH=true" 
+# Allow \ and / in page-name
+export CATALINA_OPTS="$CATALINA_OPTS -Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true"
+export CATALINA_OPTS="$CATALINA_OPTS -Dorg.apache.catalina.connector.CoyoteAdapter.ALLOW_BACKSLASH=true"
 
-# Set permanent directory 
+# Set permanent directory
 export CATALINA_OPTS="$CATALINA_OPTS -Dxwiki.data.dir=/usr/local/opt/xwiki/"
 ```
 
@@ -145,7 +141,7 @@ chown -R root:wheel /usr/local/opt/xwiki/
 Before we start Tomcat for the first time, we'll configure `host-manager` and `manager` so we can login and manage our Tomcat-servlet using it's webGUI.
 To do so, we need to edit these two files:
 
-```sh 
+```sh
 /usr/local/apache-tomcat-9.0/webapps/manager/META-INF/context.xml
 /usr/local/apache-tomcat-9.0/webapps/host-manager/META-INF/context.xml
 ```

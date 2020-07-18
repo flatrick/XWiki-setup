@@ -1,30 +1,34 @@
-# Tomcat 9
+# Overview
+
 This page is meant to describe how to install, configure and update Tomcat in a generic way that hopefully will work on any UNIX-based OS.
 
-## Create user for Tomcat
+## Install Tomcat 9
+
+### Create user for Tomcat
 
 (Taken from instructions for CentOS7)
+
 ```sh
 groupadd tomcat
 useradd -s /bin/false -g tomcat -d /opt/tomcat tomcat
 ```
 
-## Create the necessary folders
+### Create the necessary folders
 
 ```sh
 mkdir /opt/xwiki
 mkdir /opt/tomcat/9.0.26
 ```
 
-## Download & Unpack/Symlink Tomcat 
+### Download & Unpack/Symlink Tomcat
 
 ```sh
-wget http://apache.mirrors.spacedump.net/tomcat/tomcat-9/v9.0.26/bin/apache-tomcat-9.0.26.tar.gz 
+wget -N http://apache.mirrors.spacedump.net/tomcat/tomcat-9/v9.0.26/bin/apache-tomcat-9.0.26.tar.gz
 tar xzvf apache-tomcat-9.0.26.tar.gz -C /opt/tomcat/9.0.26 --strip-components=1
 ln -s /opt/tomcat/9.0.26 /opt/tomcat/latest
 ```
 
-## Configure
+### Configure
 
 ### Tomcat environment
 
@@ -32,21 +36,21 @@ Now we need to edit the file where we'll set our environment-settings:
 `vi /opt/tomcat/latest/bin/setenv.sh`
 
 ```sh
-#! /bin/bash 
-# Better garbage-collection 
-export CATALINA_OPTS="$CATALINA_OPTS -XX:+UseParallelGC" 
-# Instead of 1/6th or up to 192MB of physical memory for Minimum HeapSize 
-export CATALINA_OPTS="$CATALINA_OPTS -Xms512M" 
-# Instead of 1/4th of physical memory for Maximum HeapSize 
-export CATALINA_OPTS="$CATALINA_OPTS -Xmx1536M" 
-# Start the jvm with a hint that it's a server 
-export CATALINA_OPTS="$CATALINA_OPTS -server" 
-# Headless mode 
-export JAVA_OPTS="${JAVA_OPTS} -Djava.awt.headless=true" 
-# Allow \ and / in page-name 
-export CATALINA_OPTS="$CATALINA_OPTS -Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true" 
-export CATALINA_OPTS="$CATALINA_OPTS -Dorg.apache.catalina.connector.CoyoteAdapter.ALLOW_BACKSLASH=true" 
-# Set permanent directory 
+#! /bin/bash
+# Better garbage-collection
+export CATALINA_OPTS="$CATALINA_OPTS -XX:+UseParallelGC"
+# Instead of 1/6th or up to 192MB of physical memory for Minimum HeapSize
+export CATALINA_OPTS="$CATALINA_OPTS -Xms512M"
+# Instead of 1/4th of physical memory for Maximum HeapSize
+export CATALINA_OPTS="$CATALINA_OPTS -Xmx1536M"
+# Start the jvm with a hint that it's a server
+export CATALINA_OPTS="$CATALINA_OPTS -server"
+# Headless mode
+export JAVA_OPTS="${JAVA_OPTS} -Djava.awt.headless=true"
+# Allow \ and / in page-name
+export CATALINA_OPTS="$CATALINA_OPTS -Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true"
+export CATALINA_OPTS="$CATALINA_OPTS -Dorg.apache.catalina.connector.CoyoteAdapter.ALLOW_BACKSLASH=true"
+# Set permanent directory
 export CATALINA_OPTS="$CATALINA_OPTS -Dxwiki.data.dir=/opt/xwiki/"
 ```
 
@@ -55,6 +59,7 @@ export CATALINA_OPTS="$CATALINA_OPTS -Dxwiki.data.dir=/opt/xwiki/"
 You'll need to edit `conf/server` and ensure that the connector for port 8080 has this option: `URIEncoding="UTF-8"`  
 
 Example on how it could look:  
+
 ```xml
 <Connector port="8080" maxHttpHeaderSize="8192"
     maxThreads="150" minSpareThreads="25" maxSpareThreads="75"
@@ -70,7 +75,7 @@ chown -RH tomcat: /opt/tomcat/latest/ /opt/xwiki
 chmod +x /opt/tomcat/latest/bin/*.sh
 ```
 
-## Set up as a systemd service
+### Set up as a systemd service
 
 (Different versions of Linux will give you different ways of figuring out this path, the instructions below are for CentOS7)  
 
@@ -120,7 +125,7 @@ firewall-cmd --permanent --add-port=8080/tcp
 firewall-cmd --reload
 ```
 
-## Install MySQL Connector 
+### Install MySQL Connector
 
 We need to aquire a MySQL Connector so Java/Tomcat/XWiki can access the MySQL-database.  
 Either use `su` or `sudo -i` to temporarily switch to a user with superuser-permissions.  
@@ -130,55 +135,56 @@ When done, type `exit` to return to your regular "non-privileged" user.
 su
 cd /opt/tomcat/lib/
 wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.47.tar.gz
-tar xzf mysql-connector-java-5.1.47.tar.gz 
+tar xzf mysql-connector-java-5.1.47.tar.gz
 mv mysql-connector-java-5.1.47/*.jar /opt/tomcat/lib/
 exit
 ```
 
-# Upgrade Tomcat
+## Upgrade Tomcat
 
 ```sh
-wget http://apache.mirrors.spacedump.net/tomcat/tomcat-9/v9.0.16/bin/apache-tomcat-9.0.16.tar.gz
+wget -N http://apache.mirrors.spacedump.net/tomcat/tomcat-9/v9.0.16/bin/apache-tomcat-9.0.16.tar.gz
 sudo tar xzvf apache-tomcat-9.0.16.tar.gz -C /opt/tomcat-9.0.16 --strip-components=1
 ```
 
-These step needs to be reworked since this might only work while a new installation!
+These step needs to be reworked since this might only work with a new installation!
 
 ```sh
 sudo service tomcat stop
-sudo if [ -L /opt/tomcat ]; then rm /opt/tomcat; fi
-sudo ln -s /opt/tomcat-9.0.16 /opt/tomcat
-sudo chown -RH tomcat: /opt/tomcat
-sudo chmod +x /opt/tomcat/bin/*.sh
+sudo if [ -L /opt/tomcat ]; then rm /opt/tomcat/latest; fi
+sudo ln -s /opt/tomcat-9.0.16 /opt/tomcat/latest
+sudo chown -RH tomcat: /opt/tomcat/latest
+sudo chmod +x /opt/tomcat/latest/bin/*.sh
 ```
 
 First, we need to ensure that all custom settings are configured in the new tomcat-installation
 
 ```sh
-colordiff -yW"`tput cols`" /opt/tomcat/conf/server.xml /opt/tomcat-OldVersion/conf/server.xml  | less -R
+colordiff -yW"`tput cols`" /opt/tomcat/latest/conf/server.xml /opt/tomcat/OldVersion/conf/server.xml  | less -R
 ```
 
 We need to copy the setenv.sh that sets all of our settings for tomcat-upstart:
 
 ```sh
-cp -a /opt/tomcat-CURRENTVERSION/bin/setenv.sh /opt/tomcat/bin/
+cp -a /opt/tomcat/latest/bin/setenv.sh /opt/tomcat/OldVersion/bin/
 ```
 
 Move our XWiki-installation and the configs for manager + host-manager
 
 ```sh
-cp -a /opt/tomcat-OldVersion/webapps/xwiki /opt/tomcat/webapps/
-cp -a /opt/tomcat-OldVersion/webapps/manager/META-INF/context.xml /opt/tomcat/webapps/manager/META-INF/
-cp -a /opt/tomcat-OldVersion/webapps/host-manager/META-INF/context.xml /opt/tomcat/webapps/host-manager/META-INF/
+cp -a /opt/tomcat/OldVersion/webapps/xwiki /opt/tomcat/latest/webapps/
+cp -a /opt/tomcat/OldVersion/webapps/manager/META-INF/context.xml /opt/tomcat/latest/webapps/manager/META-INF/
+cp -a /opt/tomcat/OldVersion/webapps/host-manager/META-INF/context.xml /opt/tomcat/latest/webapps/host-manager/META-INF/
 ```
 
 And last but not least, it's time to copy our MySQL-connector
 
 ```sh
-cp -a /opt/tomcat-OldVersion/lib/mysql-connector*.jar /opt/tomcat/lib/
+cp -a /opt/tomcat/OldVersion/lib/mysql-connector*.jar /opt/tomcat/latest/lib/
 ```
 
 And now we should be ready to start up our new version of Tomcat!
+
 ```sh
 service tomcat start
 ```
