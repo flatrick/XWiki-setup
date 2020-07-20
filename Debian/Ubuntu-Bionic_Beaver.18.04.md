@@ -269,12 +269,12 @@ unzip /opt/install-files/xwiki-platform-distribution-war-10.11.9.war -d /opt/tom
 
 **TODO:** Describe necessary configuration here to connect XWiki to a database
 
-#### /opt/tomcat/webapps/xwiki/WEB-INF/xwiki.properties
+#### /opt/tomcat/latest/webapps/xwiki/WEB-INF/xwiki.properties
 
 **OBSERVE** Since we have defined `xwiki.data.dir` in `setenv.sh`, we can leave `environment.permanentDirectory` commented out in this file.  
 I've left this note of the setting here to show a different way of handling it in case you don't want the setting to be globally known throughout the Tomcat-server.
 
-#### /opt/tomcat/webapps/xwiki/WEB-INF/xwiki.cfg
+#### /opt/tomcat/latest/webapps/xwiki/WEB-INF/xwiki.cfg
 
 We need to edit these two lines so we aren't using the default keys (out of security-reasons).
 
