@@ -79,12 +79,20 @@ chmod +x /opt/tomcat/latest/bin/*.sh
 
 (Different versions of Linux will give you different ways of figuring out this path, the instructions below are for CentOS7)  
 
-The command `alternatives --config java` will give us the path to our Java-installation.  
-Remove the ending `/jre/bin/java/` and use that as the variable `JAVA_HOME`  
+Run the following command to find which JDK/JREs are available on the system.
 
-This is the path I got for java-1.8.0-openjdk-devel: `/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.222.b10-1.el7_7.x86_64`
+```sh
+ls /etc/alternatives/ | grep -P "1.8(.)*?jdk$"
+```
 
-Now it's time to create and edit our service-file for Tomcat:  
+If you've followed the previous instructions, you should have `java_sdk_1.8.0_openjdk` as an alternative, if that is true, set `JAVA_HOME` as follows:
+
+```ini
+Environment="JAVA_HOME=/etc/alternatives/java_sdk_1.8.0_openjdk"
+```
+
+Create the file /etc/systemd/system/tomcat.service and enter the following content: 
+
 `vi /etc/systemd/system/tomcat.service`  
 
 ```ini
