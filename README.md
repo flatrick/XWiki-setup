@@ -11,7 +11,6 @@ Guides to setup XWiki, first the guides will focus on using MySQL as database, T
 ## Guides
 
 - [Ubuntu Bionic Beaver 18.04](Debian/Ubuntu-Bionic_Beaver.18.04.md)
-- [FreeNAS 11.2 RC2](FreeBSD/FreeNAS_11.2-RC2.md)
 - [Red Hat Enterprise Linux 7.0/CentOS 7](RHEL/readme.md)
 - [Non-specific descriptions](non-specific/README.md)
 
