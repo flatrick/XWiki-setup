@@ -29,7 +29,11 @@ else
         exit
 fi
 
-tar xzvf ${InstallFiles}/apache-tomcat-${NewTomcat}.tar.gz -C ${TomcatDest}/${NewTomcat} --strip-components=1
+# Exit if extraction failed
+if ! tar xzvf ${InstallFiles}/apache-tomcat-${NewTomcat}.tar.gz -C ${TomcatDest}/${NewTomcat} --strip-components=1; then
+        echo "Extraction of apache-tomcat-${NewTomcat}.tar.gz failed"
+        exit
+fi
 
 
 ## Stop current version of TomCat
