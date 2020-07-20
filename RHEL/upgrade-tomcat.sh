@@ -62,8 +62,8 @@ unpack_tar
 
 service tomcat stop
 
-copyToNewTomcat
 SetSymlinks
+copyToNewTomcat
 SetPermissions
 
 
