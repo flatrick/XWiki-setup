@@ -1,5 +1,7 @@
 # Ubuntu 18.04
 
+If you're planning on running this under WSL (Windows Subsystem Linux), you'll need to replace the steps for SystemD with these steps for [SysV init.d](wsl.md)
+
 ## Unsolved issues
 
 The current nginX-configuration doesn't handle all characters perfectly ( **/** for example), this could be a limit in how nginX handles redirects/acting as reverse proxy, but I will have to look into that later.
