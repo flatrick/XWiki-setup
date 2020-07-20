@@ -1,17 +1,48 @@
 #!/usr/bin/env bash
 
-# Get download URL for Tomcat
-if [ -z ${1} ]; then
-        echo "No url was supplied as an argument for the script"
-        echo "ex: $0 http://url.to.resource/file.name.here.tar.gz"
-        exit #exit script
-elif grep -iqP "(^http[s]?):\/\/.*.tar.gz$" <<< ${1}; then
-        TomcatURL=$1
-else
-        echo "No valid url was supplied as an argument for the script"
-        echo "ex: $0 http://apache.mirrors.spacedump.net/tomcat/tomcat-9/v9.0.37/bin/apache-tomcat-9.0.37.tar.gz"
-        exit #exit script
+# Functions
+function getURL {
+	if [ -z ${1} ]; then
+			echo "No url was supplied as an argument for the script"
+			echo "ex: $0 http://url.to.resource/file.name.here.tar.gz"
+			exit
+	elif grep -iqP "(^http[s]?):\/\/.*.tar.gz$" <<< ${1}; then
+			TomcatURL=${1}
+	else
+			echo "No valid url was supplied as an argument for the script"
+			echo "ex: $0 http://apache.mirrors.spacedump.net/tomcat/tomcat-9/v9.0.37/bin/apache-tomcat-9.0.37.tar.gz"
+	exit
 fi
+}
+
+function download_tomcat {
+	if wget -N ${TomcatURL} --directory-prefix=${InstallFiles}; then
+			if ! [ -d ${TomcatDest}/${NewTomcat} ]; then
+					mkdir ${TomcatDest}/${NewTomcat}
+			fi
+	else
+			echo "Download failed, try again!"
+			exit
+	fi
+}
+
+function unpack_tar {
+	if ! tar xzvf ${InstallFiles}/apache-tomcat-${NewTomcat}.tar.gz -C ${TomcatDest}/${NewTomcat} --strip-components=1; then
+			echo "Extraction of apache-tomcat-${NewTomcat}.tar.gz failed"
+			exit
+	fi
+}
+
+function copyToNewTomcat {
+	cp -a ${OldVersion}/webapps/xwiki ${TomcatDest}/latest/webapps/
+	cp -a ${OldVersion}/webapps/manager/META-INF/context.xml ${TomcatDest}/latest/webapps/manager/META-INF/
+	cp -a ${OldVersion}/webapps/host-manager/META-INF/context.xml ${TomcatDest}/latest/webapps/host-manager/META-INF/
+	cp -a ${OldVersion}/bin/setenv.sh ${TomcatDest}/latest/bin/
+	cp -a ${OldVersion}/lib/mysql-connector*.jar ${TomcatDest}/latest/lib/
+}
+
+# Get download URL for Tomcat
+getURL ${1}
 
 # Set initial values
 NewTomcat=`echo $TomcatURL | sed -r 's/.*?(apache-tomcat-)([0-9|\.]*)(.tar.gz)/\2/'`
@@ -20,20 +51,8 @@ TomcatDest=/opt/tomcat
 
 ## Download && Unpack
 cd ${InstallFiles}
-if wget -N ${TomcatURL} --directory-prefix=${InstallFiles}; then
-        if ! [ -d ${TomcatDest}/${NewTomcat} ]; then
-                mkdir ${TomcatDest}/${NewTomcat}
-        fi
-else
-        echo "Download failed, try again!"
-        exit
-fi
-
-# Exit if extraction failed
-if ! tar xzvf ${InstallFiles}/apache-tomcat-${NewTomcat}.tar.gz -C ${TomcatDest}/${NewTomcat} --strip-components=1; then
-        echo "Extraction of apache-tomcat-${NewTomcat}.tar.gz failed"
-        exit
-fi
+download_tomcat
+unpack_tar
 
 
 ## Stop current version of TomCat
@@ -45,18 +64,9 @@ ln -s ${TomcatDest}/${NewTomcat} ${TomcatDest}/latest
 chown -RH tomcat: ${TomcatDest}/latest
 chmod +x ${TomcatDest}/latest/bin/*.sh
 
+## Copy necessary files from previous Tomcat
+copyToNewTomcat
 
-## Copy old webapps
-cp -a ${OldVersion}/webapps/xwiki ${TomcatDest}/latest/webapps/
-cp -a ${OldVersion}/webapps/manager/META-INF/context.xml ${TomcatDest}/latest/webapps/manager/META-INF/
-cp -a ${OldVersion}/webapps/host-manager/META-INF/context.xml ${TomcatDest}/latest/webapps/host-manager/META-INF/
-
-
-## Copy TomCat Settings to new version
-cp -a ${OldVersion}/bin/setenv.sh ${TomcatDest}/latest/bin/
-  
-## Copy MySQL-connector to the new Tomcat-instance
-cp -a ${OldVersion}/lib/mysql-connector*.jar ${TomcatDest}/latest/lib/
 
 #################################################################
 
