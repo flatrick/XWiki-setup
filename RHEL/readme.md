@@ -121,7 +121,19 @@ chmod +x /opt/tomcat/latest/bin/*.sh
 
 #### Set up as a systemd service
 
-The command `alternatives --list |grep java` will show you which versions of Java are installed on the server, ensure you see 1.8.0 here before continuing.
+Run the following command to find which JDK/JREs are available on the system.
+
+```sh
+ls /etc/alternatives/ | grep -P "1.8(.)*?jdk$"
+```
+
+If you've followed the previous instructions, you should have `java_sdk_1.8.0_openjdk` as an alternative, if that is true, set `JAVA_HOME` as follows:
+
+```ini
+Environment="JAVA_HOME=/etc/alternatives/java_sdk_1.8.0_openjdk"
+```
+
+Create the file /etc/systemd/system/tomcat.service and enter the following content: 
 
 `vi /etc/systemd/system/tomcat.service`
 
