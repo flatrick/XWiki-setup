@@ -133,6 +133,18 @@ firewall-cmd --permanent --add-port=8080/tcp
 firewall-cmd --reload
 ```
 
+#### manager & host-manager
+
+Edit `/opt/tomcat/latest/webapps/manager/META-INF/context.xml`
+and `/opt/tomcat/latest/webapps/host-manager/META-INF/context.xml`
+to allow your computer (as the admin) to access Tomcat's manager and host-manager-application:
+
+`allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1|192\.168\.100\.\d+" />`
+
+The example above will give access to the host-manager and manager-applications of Tomcat from any IP that starts with `192.168.100.X`, so modify it to suit your needs.
+
+**TODO:** Describe how to create users for **manager** & **host-manager**
+
 ### Install MySQL Connector
 
 We need to aquire a MySQL Connector so Java/Tomcat/XWiki can access the MySQL-database.  

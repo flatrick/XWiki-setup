@@ -177,8 +177,8 @@ firewall-cmd --reload
 
 #### manager & host-manager
 
-Edit `/opt/tomcat/webapps/manager/META-INF/context.xml`
-and `/opt/tomcat/webapps/host-manager/META-INF/context.xml`
+Edit `/opt/tomcat/latest/webapps/manager/META-INF/context.xml`
+and `/opt/tomcat/latest/webapps/host-manager/META-INF/context.xml`
 to allow your computer (as the admin) to access Tomcat's manager and host-manager-application:
 
 `allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1|192\.168\.100\.\d+" />`
