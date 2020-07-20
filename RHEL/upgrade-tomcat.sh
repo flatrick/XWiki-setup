@@ -16,17 +16,14 @@ fi
 }
 
 function download_tomcat {
-	if wget -N ${TomcatURL} --directory-prefix=${InstallFiles}; then
-			if ! [ -d ${TomcatDest}/${NewTomcat} ]; then
-					mkdir ${TomcatDest}/${NewTomcat}
-			fi
-	else
-			echo "Download failed, try again!"
-			exit
+	if ! wget -N ${TomcatURL} --directory-prefix=${InstallFiles}; then
+		echo "Download failed, try again!"
+		exit
 	fi
 }
 
 function unpack_tar {
+	if ! [ -d ${TomcatDest}/${NewTomcat} ]; then mkdir ${TomcatDest}/${NewTomcat};  fi
 	if ! tar xzvf ${InstallFiles}/apache-tomcat-${NewTomcat}.tar.gz -C ${TomcatDest}/${NewTomcat} --strip-components=1; then
 			echo "Extraction of apache-tomcat-${NewTomcat}.tar.gz failed"
 			exit
@@ -41,31 +38,33 @@ function copyToNewTomcat {
 	cp -a ${OldVersion}/lib/mysql-connector*.jar ${TomcatDest}/latest/lib/
 }
 
-# Get download URL for Tomcat
-getURL ${1}
+function SetSymlinks {
+	if [ -L ${TomcatDest}/latest ]; then OldVersion=`readlink ${TomcatDest}/latest`; rm ${TomcatDest}/latest; fi
+	ln -s ${TomcatDest}/${NewTomcat} ${TomcatDest}/latest
+}
+
+function SetPermissions {
+	chown -RH tomcat: ${TomcatDest}/latest
+	chmod +x ${TomcatDest}/latest/bin/*.sh
+}
+# End of functions
 
 # Set initial values
+getURL ${1}
 NewTomcat=`echo $TomcatURL | sed -r 's/.*?(apache-tomcat-)([0-9|\.]*)(.tar.gz)/\2/'`
 InstallFiles=/opt/install-files
 TomcatDest=/opt/tomcat
+# End of initial values
 
-## Download && Unpack
 cd ${InstallFiles}
 download_tomcat
 unpack_tar
 
-
-## Stop current version of TomCat
-## Change symbolic link to the new version
-## Set correct permissions on files
 service tomcat stop
-if [ -L ${TomcatDest}/latest ]; then OldVersion=`readlink ${TomcatDest}/latest`; rm ${TomcatDest}/latest; fi
-ln -s ${TomcatDest}/${NewTomcat} ${TomcatDest}/latest
-chown -RH tomcat: ${TomcatDest}/latest
-chmod +x ${TomcatDest}/latest/bin/*.sh
 
-## Copy necessary files from previous Tomcat
 copyToNewTomcat
+SetSymlinks
+SetPermissions
 
 
 #################################################################
