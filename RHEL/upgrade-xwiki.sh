@@ -56,6 +56,7 @@ WebApps=/opt/tomcat/latest/webapps
 
 service tomcat stop
 
+cd ${InstallFiles}
 download_war
 unpackNewVersion
 setPermissions
