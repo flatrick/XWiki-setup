@@ -10,8 +10,8 @@ Guides to setup XWiki, first the guides will focus on using MySQL as database, T
 
 ## Guides
 
-- [Ubuntu Bionic Beaver 18.04](Debian/Ubuntu-Bionic_Beaver.18.04.md)
-- [Red Hat Enterprise Linux 7.0/CentOS 7](RHEL/readme.md)
+- [Ubuntu Bionic Beaver 18.04](Debian/README.MD)
+- [Red Hat Enterprise Linux 7.0/CentOS 7](RHEL/README.MD)
 - [Non-specific descriptions](non-specific/README.md)
 
 ## Script
