@@ -367,62 +367,62 @@ Configure the script below to run on a daily basis through a cron-job
 
 Date="$(date +"%Y.%m.%d-%H.%M.%S")"
 BackupFolder="/opt/backup"
-MySQL="$BackupFolder/mysql"
-Files="$BackupFolder/files"
-MySQLBackup="$MySQL/xwiki_db_backup-$Date.sql"
-FilesBackup="$Files/wiki_files_backup-$Date.tar.gz"
-Logs="$BackupFolder/logs"
+MySQL="${BackupFolder}/mysql"
+Files="${BackupFolder}/files"
+MySQLBackup="${MySQL}/xwiki_db_backup-${Date}.sql"
+FilesBackup="${Files}/wiki_files_backup-${Date}.tar.gz"
+Logs="${BackupFolder}/logs"
 Host="localhost"
 User="xwiki"
 Pass="SOMETHING74f3H3r3?"
 Db="xwiki"
-Options="--add-drop-database --max_allowed_packet=1G --comments --dump-date --log-error=$Logs/$Date/mysqldump.log"
+Options="--add-drop-database --max_allowed_packet=1G --comments --dump-date --log-error=${Logs}/${Date}/mysqldump.log"
 
 ############################
 # Create necessary folders #
 ############################
 
-if [ ! -d $Logs/$Date ] ; then
-        mkdir $Logs/$Date
+if [ ! -d ${Logs}/${Date} ] ; then
+        mkdir ${Logs}/${Date}
 fi
 
-if [ ! -d $MySQL ] ; then
-        mkdir $MySQL
+if [ ! -d ${MySQL} ] ; then
+        mkdir ${MySQL}
 fi
 
-if [ ! -d $Files ] ; then
-        mkdir $Files
+if [ ! -d ${Files} ] ; then
+        mkdir ${Files}
 fi
 
 ###################################
 # Make a SQL-dump and compress it #
 ###################################
 
-if mysqldump --host=$Host --password=$Pass --user=$User --databases $Db $Options > $MySQLBackup; then
-        if tar -zcf $MySQLBackup.tar.gz $MySQLBackup ; then
-               rm -rf $MySQLBackup
+if mysqldump --host=${Host} --password=${Pass} --user=${User} --databases ${Db} ${Options} > ${MySQLBackup}; then
+        if tar -zcf ${MySQLBackup}.tar.gz ${MySQLBackup} ; then
+               rm -rf ${MySQLBackup}
         else
-               echo "The compression of the sql-dump was unsuccessful" >> $Logs/$Date/mysqldump.log
+               echo "The compression of the sql-dump was unsuccessful" >> ${Logs}/${Date}/mysqldump.log
         fi
 else
-        echo "The mysqldump was unsuccessful!" >> $Logs/$Date/mysqldump.log
+        echo "The mysqldump was unsuccessful!" >> ${Logs}/${Date}/mysqldump.log
 fi
 
 ################
 # Backup files #
 ################
 
-if ! tar -czf $FilesBackup /opt/xwiki /opt/tomcat/latest/webapps/ /opt/tomcat/latest/work/; then
-        echo "The backup was unsuccessful!" >> $Logs/$Date/files.log;
+if ! tar -czf ${FilesBackup} /opt/xwiki /opt/tomcat/latest/webapps/ /opt/tomcat/latest/work/; then
+        echo "The backup was unsuccessful!" >> ${Logs}/${Date}/files.log;
 fi
 
 #####################
 # Clean old backups #
 #####################
 
-find $BackupFolder -daystart -mtime +28 -type f -name "*.tar.gz" -print0 | xargs -0 -r rm
-find $BackupFolder -daystart -mtime +7 -type f -name "*.sql" -print0 | xargs -0 -r rm
-find $BackupFolder -daystart -mtime +90 -type f -name "*.log" -print0 | xargs -0 -r rm
+find ${BackupFolder} -daystart -mtime +28 -type f -name "*.tar.gz" -print0 | xargs -0 -r rm
+find ${BackupFolder} -daystart -mtime +7 -type f -name "*.sql" -print0 | xargs -0 -r rm
+find ${BackupFolder} -daystart -mtime +90 -type f -name "*.log" -print0 | xargs -0 -r rm
 ```
 
 Add the following line to `/etc/crontab` so our scripts runs daily at 01:00 (AM)
