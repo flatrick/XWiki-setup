@@ -81,20 +81,28 @@ Now we need to edit the file where we'll set our environment-settings:
 
 ```sh
 #! /bin/bash
-# Better garbage-collection
-export CATALINA_OPTS="$CATALINA_OPTS -XX:+UseParallelGC"
-# Instead of 1/6th or up to 192MB of physical memory for Minimum HeapSize
-export CATALINA_OPTS="$CATALINA_OPTS -Xms512M"
-# Instead of 1/4th of physical memory for Maximum HeapSize
-export CATALINA_OPTS="$CATALINA_OPTS -Xmx1536M"
-# Start the jvm with a hint that it's a server
-export CATALINA_OPTS="$CATALINA_OPTS -server"
-# Headless mode
-export JAVA_OPTS="${JAVA_OPTS} -Djava.awt.headless=true"
-# Allow \ and / in page-name
+## This file allows us to override any settings or add settings missing in /etc/systemd/system/tomcat.service ## 
+
+# Better garbage-collection #
+# export CATALINA_OPTS="$CATALINA_OPTS -XX:+UseParallelGC"
+
+# Instead of 1/6th or up to 192MB of physical memory for Minimum HeapSize #
+# export CATALINA_OPTS="$CATALINA_OPTS -Xms512M"
+
+# Instead of 1/4th of physical memory for Maximum HeapSize #
+# export CATALINA_OPTS="$CATALINA_OPTS -Xmx1024M"
+
+# Start the jvm with a hint that it's a server #
+# export CATALINA_OPTS="$CATALINA_OPTS -server"
+
+# Headless mode #
+# export JAVA_OPTS="${JAVA_OPTS} -Djava.awt.headless=true"
+
+# Allow \ and / in page-name #
 export CATALINA_OPTS="$CATALINA_OPTS -Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true"
 export CATALINA_OPTS="$CATALINA_OPTS -Dorg.apache.catalina.connector.CoyoteAdapter.ALLOW_BACKSLASH=true"
-# Set permanent directory
+
+# Set permanent directory #
 export CATALINA_OPTS="$CATALINA_OPTS -Dxwiki.data.dir=/opt/xwiki/"
 ```
 
@@ -151,7 +159,7 @@ Environment="JAVA_HOME=/etc/alternatives/java_sdk_1.8.0_openjdk"
 Environment="CATALINA_PID=/opt/tomcat/latest/temp/tomcat.pid"
 Environment="CATALINA_HOME=/opt/tomcat/latest"
 Environment="CATALINA_BASE=/opt/tomcat/latest"
-Environment="CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC"
+Environment="CATALINA_OPTS=-Xms512M -Xmx1024M -XX:MaxPermSize=196m -server -XX:+UseParallelGC"
 Environment="JAVA_OPTS=-Djava.awt.headless=true -Djava.security.egd=file:///dev/urandom"
 ExecStart="/opt/tomcat/latest/bin/startup.sh"
 ExecStop="/opt/tomcat/latest/bin/shutdown.sh"
